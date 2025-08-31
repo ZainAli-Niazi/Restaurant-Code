@@ -1,0 +1,28 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('shifts', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->foreignId('user_id')->constrained();
+            $table->decimal('starting_cash', 10, 2)->default(0);
+            $table->decimal('ending_cash', 10, 2)->nullable();
+            $table->timestamp('start_time')->useCurrent();
+            $table->timestamp('end_time')->nullable();
+            $table->text('notes')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('shifts');
+    }
+};

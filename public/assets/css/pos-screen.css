@@ -1,0 +1,165 @@
+/* ====== Global Body ====== */
+body {
+  background: #f5f7fb;
+  padding: 20px;
+  padding-bottom: 180px;
+  /* Space for the fixed bottom bar */
+}
+
+/* Card Styling */
+.card-soft {
+  background: #fff;
+  border: 1px solid #eef0f4;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, .04);
+}
+
+/* Rounded Buttons */
+.btn-pill {
+  border-radius: 14px;
+}
+
+/* Active Category Button */
+.category-btn.active {
+  background: #0d6efd;
+  color: #fff;
+}
+
+/* Product Card Styling */
+.product-card {
+  transition: transform .12s ease, box-shadow .12s ease;
+  cursor: pointer;
+  height: 100%;
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+}
+
+/* Order Table Header */
+.table thead th {
+  background: #f0f3f9;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Order Table Wrapper (Scrollable) */
+.order-table-wrap {
+  max-height: 360px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+}
+
+/* Totals Section */
+.calc-total {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.calc-label {
+  color: #6b7280;
+  font-size: .85rem;
+}
+
+/* ===== Sticky Bottom Bar ===== */
+.sticky-bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 80px;
+  /* sidebar width */
+  right: 0;
+  z-index: 100;
+  background: #fff;
+  border-top: 1px solid #eef0f4;
+  padding: 15px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+  height: auto;
+  transition: all 0.3s ease;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr 1fr 1fr;
+  gap: 0;
+  margin-top: 20px;
+}
+
+
+/* Balance + Return box aligned right */
+.balance-return-box {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #374151;
+  background: #f9fafb;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  min-width: 160px;
+  line-height: 1.4;
+}
+
+/* Product Card Content */
+.product-content {
+  padding: 15px 10px;
+  text-align: center;
+}
+
+.product-name {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.product-price {
+  color: #0d6efd;
+  font-weight: 500;
+}
+ 
+
+/* Alert Box */
+#alertContainer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1050;
+  min-width: 300px;
+}
+
+
+.action-buttons>div {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.action-buttons button {
+  border-radius: 0;
+  padding: 10px 0;
+}
+
+.sticky-bottom-bar {
+  padding: 10px 0px 0 0px;
+  left: 70px;
+}
+
+.sticky-bottom-bar>.container-fluid {
+  padding: 0;
+}
+
+.total-calculations-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 2fr;
+}
+
+.total-calculations-wrap .col-6 {
+  width: 100%;
+}
+
+.calc-paid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
