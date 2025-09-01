@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@section('title', 'POS')
+@section('header', $restaurantSettings['restaurant_name'] ?? 'Restaurant')
+
+
 @section('content')
     <div class="container-fluid px-0">
         <div id="alertContainer"></div>
@@ -166,3 +170,16 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+<script>
+    window.restaurantInfo = {
+        name: "{{ $restaurantSettings['restaurant_name'] ?? 'Restaurant' }}",
+        address: "{{ $restaurantSettings['restaurant_address'] ?? '' }}",
+        phone: "{{ $restaurantSettings['restaurant_phone'] ?? '' }}",
+        
+    };
+</script>
+
+    <script src="{{ asset('assets/js/pos.js') }}"></script>
+    
+@endpush

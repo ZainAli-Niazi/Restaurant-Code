@@ -67,7 +67,7 @@
         });
     </script>
       <div class="footer">
-            2025 © Niazi School MANAGEMENT Developed By <a href="#" class="text-decoration-none">Zain Ali</a>
+            2025 © {{ $restaurantSettings['restaurant_name'] ?? 'Restaurant Name' }} Developed By <a href="#" class="text-decoration-none">Zain Ali</a>
         </div>
     </div>
 </body>

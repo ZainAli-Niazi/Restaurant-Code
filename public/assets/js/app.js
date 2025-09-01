@@ -77,6 +77,31 @@ $(document).ready(function () {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ // Restaurant info from backend
+    const restaurantInfo = {
+        name: "{{ $restaurantSettings['restaurant_name'] ?? 'Restaurant' }}",
+        address: "{{ $restaurantSettings['restaurant_address'] ?? '' }}",
+        phone: "{{ $restaurantSettings['restaurant_phone'] ?? '' }}"
+    };
+
+
+
 /* =========================
    POS Frontend — Optimized
    ========================= */
@@ -235,7 +260,6 @@ function openAndPrint(html) {
     try { w.focus(); w.print(); } finally { /* optional: keep window open for reprint */ }
   };
 }
-
 // ===== Invoice & KOT =====
 function generateInvoice() {
   const tableNumber = $('#tableSelect').val();
@@ -276,9 +300,9 @@ function generateInvoice() {
 
     <!-- HEADER -->
     <div class="text-center">
-      <div class="bold" style="font-size:16px;">Khaana Restaurant</div>
-      <div>123 Food Street, City</div>
-      <div>Phone: (123) 456-7890</div>
+      <div class="bold" style="font-size:16px;">${restaurantInfo.name}</div>
+      <div>${restaurantInfo.address}</div>
+      <div>Phone: ${restaurantInfo.phone}</div>
     </div>
     <div class="line"></div>
 
@@ -296,7 +320,6 @@ function generateInvoice() {
           <th class="text-left">Item</th>
           <th class="qty">Qty</th>
           <th class="price">Price</th>
-          
           <th class="total">Total</th>
         </tr>
       </thead>
@@ -305,9 +328,8 @@ function generateInvoice() {
           <tr>
             <td>${item.name}</td>
             <td class="qty">${item.qty}</td>
-            <td class="price">  ${Number(item.price).toFixed(2)}</td>
-            
-            <td class="total">  ${(item.price * item.qty * (1 - item.discPct / 100)).toFixed(2)}</td>
+            <td class="price">${Number(item.price).toFixed(2)}</td>
+            <td class="total">${(item.price * item.qty * (1 - item.discPct / 100)).toFixed(2)}</td>
           </tr>`).join('')}
       </tbody>
     </table>
@@ -331,6 +353,7 @@ function generateInvoice() {
   </html>`;
   openAndPrint(invoiceContent);
 }
+
 function generateKOT() {
   const tableNumber = $('#tableSelect').val();
   const orderItems = Array.from(order.values());

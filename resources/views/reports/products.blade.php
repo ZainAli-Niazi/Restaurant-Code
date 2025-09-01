@@ -5,8 +5,8 @@
 
 @section('content')
 <div class="container-fluid px-4">
-    <div class="card mb-4">
-        <div class="card-header bg-white py-3">
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-white py-3 border-bottom">
             <h5 class="mb-0">
                 <i class="fas fa-chart-line me-2"></i>Product Sales Report
             </h5>
@@ -17,19 +17,29 @@
             <form method="GET" action="{{ route('reports.products') }}" class="mb-4">
                 <div class="row g-3 align-items-end">
                     <div class="col-md-4">
-                        <label for="from_date" class="form-label">From Date</label>
-                        <input type="date" class="form-control" id="from_date" name="from_date" 
-                               value="{{ $dateRange['from_formatted'] }}" max="{{ date('Y-m-d') }}">
+                        <label for="from_date" class="form-label fw-semibold">From Date</label>
+                        <input 
+                            type="date" 
+                            class="form-control" 
+                            id="from_date" 
+                            name="from_date" 
+                            value="{{ $dateRange['from_formatted'] }}" 
+                            max="{{ date('Y-m-d') }}">
                     </div>
                     
                     <div class="col-md-4">
-                        <label for="to_date" class="form-label">To Date</label>
-                        <input type="date" class="form-control" id="to_date" name="to_date" 
-                               value="{{ $dateRange['to_formatted'] }}" max="{{ date('Y-m-d') }}">
+                        <label for="to_date" class="form-label fw-semibold">To Date</label>
+                        <input 
+                            type="date" 
+                            class="form-control" 
+                            id="to_date" 
+                            name="to_date" 
+                            value="{{ $dateRange['to_formatted'] }}" 
+                            max="{{ date('Y-m-d') }}">
                     </div>
                     
-                    <div class="col-md-4">
-                        <button type="submit" class="btn btn-primary w-100">
+                    <div class="col-md-4 d-grid">
+                        <button type="submit" class="btn btn-primary">
                             <i class="fas fa-filter me-1"></i> Apply Filters
                         </button>
                     </div>
@@ -38,7 +48,7 @@
             
             <!-- Data Table -->
             <div class="table-responsive">
-                <table class="table table-hover">
+                <table class="table table-hover table-bordered align-middle">
                     <thead class="table-light">
                         <tr>
                             <th>Product</th>
@@ -51,20 +61,24 @@
                         <tr>
                             <td>{{ $data->name }}</td>
                             <td class="text-end">{{ $data->sold_quantity }}</td>
-                            <td class="text-end">Rs{{ number_format($data->total_revenue, 2) }}</td>
+                            <td class="text-end">Rs {{ number_format($data->total_revenue, 2) }}</td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="3" class="text-center py-4">No sales data found for the selected period</td>
+                            <td colspan="3" class="text-center text-muted py-4">
+                                <i class="fas fa-info-circle me-1"></i> 
+                                No sales data found for the selected period.
+                            </td>
                         </tr>
                         @endforelse
                     </tbody>
+                    
                     @if($productData->isNotEmpty())
-                    <tfoot class="table-light">
+                    <tfoot class="table-light fw-bold">
                         <tr>
-                            <th>Total</th>
-                            <th class="text-end">{{ $summary['total_quantity'] }}</th>
-                            <th class="text-end">Rs{{ number_format($summary['total_revenue'], 2) }}</th>
+                            <td>Total</td>
+                            <td class="text-end">{{ $summary['total_quantity'] }}</td>
+                            <td class="text-end">Rs {{ number_format($summary['total_revenue'], 2) }}</td>
                         </tr>
                     </tfoot>
                     @endif

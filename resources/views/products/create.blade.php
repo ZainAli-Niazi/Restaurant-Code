@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'Add New Product')
-@section('header', 'Add New Product')
+@section('header', $restaurantSettings['restaurant_name'] ?? 'Restaurant')
+
 
 @section('content')
 <div class="container-fluid px-0">

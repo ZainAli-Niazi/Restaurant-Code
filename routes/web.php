@@ -51,6 +51,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/expenses/{expense}/edit', [ExpenseController::class, 'edit'])->name('expenses.edit');
     Route::match(['put', 'patch'], '/expenses/{expense}', [ExpenseController::class, 'update'])->name('expenses.update');
     Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
+    Route::get('/expenses/export', [ExpenseController::class, 'export'])->name('expenses.export');
+   
 
     // Halls
     Route::get('/halls', [HallController::class, 'index'])->name('halls.index');
@@ -118,13 +120,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 // Settings Routes
 Route::prefix('settings')->group(function () {
-    Route::get('/', [SettingsController::class, 'index'])->name('settings.index');
-    Route::put('/restaurant', [SettingsController::class, 'updateRestaurant'])->name('settings.restaurant.update');
-    Route::put('/pos', [SettingsController::class, 'updatePOS'])->name('settings.pos.update');
-    Route::put('/receipt', [SettingsController::class, 'updateReceipt'])->name('settings.receipt.update');
-    Route::put('/tables', [SettingsController::class, 'updateTables'])->name('settings.tables.update');
-    Route::post('/backup', [SettingsController::class, 'createBackup'])->name('settings.backup.create');
-    Route::delete('/reset', [SettingsController::class, 'resetSettings'])->name('settings.reset');
+    Route::get('/', [App\Http\Controllers\SettingController::class, 'index'])->name('settings.index');
+    Route::post('/restaurant', [App\Http\Controllers\SettingController::class, 'updateRestaurant'])->name('settings.restaurant.update');
+    Route::post('/tax', [App\Http\Controllers\SettingController::class, 'updateTax'])->name('settings.tax.update');
+    Route::get('/{key}', [App\Http\Controllers\SettingController::class, 'getSetting'])->name('settings.get');
 });
 
 

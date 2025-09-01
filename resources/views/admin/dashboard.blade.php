@@ -1,10 +1,12 @@
 @extends('layouts.app')
 
 @section('title', 'Dashboard')
+@section('header', $restaurantSettings['restaurant_name'] ?? 'Restaurant')
+
 
 @section('content')
 <div class="container-fluid">
-    <h1 class="mt-4">Dashboard</h1>
+   
     
     <div class="row mt-4">
         <div class="col-xl-3 col-md-6">
