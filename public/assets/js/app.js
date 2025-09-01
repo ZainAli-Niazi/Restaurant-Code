@@ -73,38 +73,7 @@ $(document).ready(function () {
 
 //   -----------------------------------------------------POS Screen------------------------------------------------------------------- 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- // Restaurant info from backend
-    const restaurantInfo = {
-        name: "{{ $restaurantSettings['restaurant_name'] ?? 'Restaurant' }}",
-        address: "{{ $restaurantSettings['restaurant_address'] ?? '' }}",
-        phone: "{{ $restaurantSettings['restaurant_phone'] ?? '' }}"
-    };
-
-
-
-/* =========================
-   POS Frontend — Optimized
-   ========================= */
+ 
 
 // ===== Config =====
 const CURRENCY_SYMBOL = '₨';
