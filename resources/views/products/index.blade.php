@@ -1,10 +1,11 @@
 @extends('layouts.app')
 
 @section('title', 'Product Management')
-@section('header', 'Product Management')
+@section('header', $restaurantSettings['restaurant_name'] ?? 'Restaurant')
 
 @section('content')
 <div class="container-fluid px-0">
+
     <!-- Header Section -->
     <div class="row mb-4 align-items-center">
         <div class="col-md-6">
@@ -13,8 +14,13 @@
             </h2>
         </div>
         <div class="col-md-6 text-end">
-            <a href="{{ route('products.create') }}" class="btn btn-primary shadow-sm">
-                <i class="bi bi-plus-lg me-2"></i> Add Product
+            <!-- Add Product Button -->
+            <a href="{{ route('products.create') }}" class="btn btn-success shadow px-4 py-2 rounded-pill me-2">
+                <i class="bi bi-plus-lg me-1"></i> Add Product
+            </a>
+            <!-- Add Category Button -->
+            <a href="{{ route('categories.create') }}" class="btn btn-primary shadow px-4 py-2 rounded-pill">
+                <i class="bi bi-tags me-1"></i> Add Category
             </a>
         </div>
     </div>
@@ -45,15 +51,13 @@
                             <!-- Product Name with Image -->
                             <td>
                                 <div class="d-flex align-items-center">
-                                    @if($product->image)
-                                        <img src="{{ asset('storage/'.$product->image) }}"
-                                             alt="{{ $product->name }}"
-                                             class="rounded me-3 border"
-                                             width="40" height="40"
-                                             style="object-fit: cover;">
+                                    @if ($product->image)
+                                        <img src="{{ asset('storage/' . $product->image) }}"
+                                            alt="{{ $product->name }}" class="rounded me-3 border"
+                                            width="40" height="40" style="object-fit: cover;">
                                     @else
                                         <div class="bg-light rounded me-3 d-flex align-items-center justify-content-center border"
-                                             style="width:40px;height:40px;">
+                                            style="width:40px;height:40px;">
                                             <i class="bi bi-image text-muted"></i>
                                         </div>
                                     @endif
@@ -72,8 +76,9 @@
                                 <span class="fw-semibold {{ $product->stock < 10 ? 'text-danger' : 'text-success' }}">
                                     {{ $product->stock }}
                                 </span>
-                                @if($product->stock < 10)
-                                    <i class="bi bi-exclamation-triangle-fill text-danger ms-1" data-bs-toggle="tooltip" title="Low Stock"></i>
+                                @if ($product->stock < 10)
+                                    <i class="bi bi-exclamation-triangle-fill text-danger ms-1"
+                                        data-bs-toggle="tooltip" title="Low Stock"></i>
                                 @endif
                             </td>
 
@@ -96,21 +101,18 @@
                                 <div class="btn-group btn-group-sm" role="group">
                                     <!-- Edit Button -->
                                     <a href="{{ route('products.edit', $product->id) }}"
-                                       class="btn btn-outline-primary"
-                                       data-bs-toggle="tooltip"
-                                       title="Edit Product">
+                                        class="btn-action edit-btn" data-bs-toggle="tooltip" title="Edit Product">
                                         <i class="bi bi-pencil"></i>
                                     </a>
 
                                     <!-- Delete Button -->
-                                    <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('products.destroy', $product->id) }}" method="POST"
+                                        class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit"
-                                                class="btn btn-outline-danger"
-                                                onclick="return confirm('Are you sure you want to delete this product?')"
-                                                data-bs-toggle="tooltip"
-                                                title="Delete Product">
+                                        <button type="submit" class="btn-action delete-btn"
+                                            onclick="return confirm('Are you sure you want to delete this product?')"
+                                            data-bs-toggle="tooltip" title="Delete Product">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
@@ -130,7 +132,7 @@
             </div>
 
             <!-- Pagination -->
-            @if($products->hasPages())
+            @if ($products->hasPages())
             <div class="card-footer bg-transparent">
                 <div class="d-flex justify-content-center">
                     {{ $products->links() }}
@@ -142,12 +144,46 @@
 </div>
 @endsection
 
+@section('styles')
+<style>
+    /* Action Buttons */
+    .btn-action {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: none;
+        background: #f8f9fa;
+        color: #6c757d;
+        font-size: 16px;
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.08),
+                    -2px -2px 6px rgba(255,255,255,0.8);
+        transition: all 0.25s ease-in-out;
+    }
+
+    .btn-action:hover {
+        transform: scale(1.15);
+        color: #fff;
+    }
+
+    .edit-btn:hover {
+        background-color: #0d6efd;
+    }
+
+    .delete-btn:hover {
+        background-color: #dc3545;
+    }
+</style>
+@endsection
+
 @section('scripts')
 <script>
     // Enable Bootstrap Tooltips
     document.addEventListener("DOMContentLoaded", function() {
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        tooltipTriggerList.forEach(function(tooltipTriggerEl) {
             new bootstrap.Tooltip(tooltipTriggerEl);
         });
     });

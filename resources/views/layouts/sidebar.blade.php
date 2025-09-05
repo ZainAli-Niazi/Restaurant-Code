@@ -21,8 +21,33 @@
             <span class="sidebar-text">POS</span>
         </a>
 
+
+
+        
+        <!-- Orders -->
+
+          <a href="{{ route('orders.index') }}" class="sidebar-item" data-bs-toggle="tooltip" data-bs-placement="right"
+            title="Orders (F2)">
+           <i class="bi bi-cart4"></i>
+            <span class="sidebar-text">Orders</span>
+        </a>
+
+        {{-- <div class="sidebar-item submenu-toggle" data-bs-toggle="tooltip" data-bs-placement="right" title="Orders">
+            <div class="d-flex align-items-center w-100">
+                <i class="bi bi-cart4"></i>
+                <span class="sidebar-text">Orders</span>
+                <i class="bi bi-chevron-right dropdown-icon"></i>
+            </div>
+        </div>
+        <div class="submenu">
+            <a href="{{ route('orders.index') }}" class="submenu-item">All Orders</a>
+
+        </div> --}}
+
+
         <!-- Products & Categories -->
-        <div class="sidebar-item submenu-toggle" data-bs-toggle="tooltip" data-bs-placement="right" title="Products">
+        
+        {{-- <div class="sidebar-item submenu-toggle" data-bs-toggle="tooltip" data-bs-placement="right" title="Products">
             <div class="d-flex align-items-center w-100">
                 <i class="bi bi-box-seam"></i>
                 <span class="sidebar-text">Products</span>
@@ -33,20 +58,13 @@
             <a href="{{ route('products.index') }}" class="submenu-item">All Products</a>
             <a href="{{ route('products.create') }}" class="submenu-item">Add Product</a>
             <a href="{{ route('categories.index') }}" class="submenu-item">Categories</a>
-        </div>
+        </div> --}}
 
-        <!-- Orders -->
-        <div class="sidebar-item submenu-toggle" data-bs-toggle="tooltip" data-bs-placement="right" title="Orders">
-            <div class="d-flex align-items-center w-100">
-                <i class="bi bi-cart4"></i>
-                <span class="sidebar-text">Orders</span>
-                <i class="bi bi-chevron-right dropdown-icon"></i>
-            </div>
-        </div>
-        <div class="submenu">
-            <a href="{{ route('orders.index') }}" class="submenu-item">All Orders</a>
-
-        </div>
+            <!-- Products & Categories -->
+        <a href="{{ route('products.index') }}" class="sidebar-item" data-bs-toggle="tooltip" data-bs-placement="right"
+            title="Products & Categories">
+            <i class="bi bi-box-seam"></i>
+            <span class="sidebar-text">Products</span>
 
         <!-- Expenses -->
         <a href="{{ route('expenses.index') }}" class="sidebar-item" data-bs-toggle="tooltip" data-bs-placement="right"

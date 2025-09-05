@@ -91,7 +91,6 @@ class POSController extends Controller
                 'message' => 'Order saved successfully',
                 'order_id' => $order->id
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([

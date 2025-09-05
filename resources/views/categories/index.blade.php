@@ -11,7 +11,7 @@
         </div>
         <div class="col-md-6 text-end">
             <a href="{{ route('categories.create') }}" class="btn btn-primary btn-sm">
-                <i class="bi bi-plus-lg me-1"></i> Add New Category
+                <i class="bi bi-plus-lg me-1"></i> Add Category
             </a>
         </div>
     </div>
@@ -52,20 +52,24 @@
                                     {{ $category->products_count }}
                                 </span>
                             </td>
-                            <td class="text-center">
+                           
+                             <!-- Actions -->
+                            <td class="text-end pe-4">
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a href="{{ route('categories.edit', $category->id) }}" 
-                                       class="btn btn-outline-primary"
-                                       data-bs-toggle="tooltip" title="Edit">
+                                    <!-- Edit Button -->
+                                    <a href="{{ route('categories.edit', $category->id) }}"
+                                        class="btn-action edit-btn" data-bs-toggle="tooltip" title="Edit">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST">
+
+                                    <!-- Delete Button -->
+                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST"
+                                        class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" 
-                                                class="btn btn-outline-danger"
-                                                onclick="return confirm('Are you sure you want to delete this category?')"
-                                                data-bs-toggle="tooltip" title="Delete">
+                                        <button type="submit" class="btn-action delete-btn"
+                                            onclick="return confirm('Are you sure you want to delete this product?')"
+                                            data-bs-toggle="tooltip" title="Delete  ">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
@@ -100,6 +104,43 @@
     </div>
 </div>
 @endsection
+
+
+@section('styles')
+<style>
+    /* Action Buttons */
+    .btn-action {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+     
+        border: none;
+        background: #f8f9fa;
+        color: #6c757d;
+        font-size: 16px;
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.08),
+                    -2px -2px 6px rgba(255,255,255,0.8);
+        transition: all 0.25s ease-in-out;
+    }
+
+    .btn-action:hover {
+        transform: scale(1.15);
+        color: #fff;
+    }
+
+    .edit-btn:hover {
+        background-color: #0d6efd;
+    }
+
+    .delete-btn:hover {
+        background-color: #dc3545;
+    }
+</style>
+@endsection
+
 
 @section('scripts')
 <script>

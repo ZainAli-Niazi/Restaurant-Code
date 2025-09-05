@@ -17,9 +17,6 @@
                 <!-- Categories -->
                 <div class="card-soft p-3 mb-3">
                     <div class="d-flex flex-wrap gap-2" id="categoryButtons">
-                        <button class="btn btn-outline-primary btn-pill category-btn active" data-id="all">
-                            All
-                        </button>
                         @foreach ($categories as $category)
                             <button class="btn btn-outline-primary btn-pill category-btn" data-id="{{ $category->id }}">
                                 {{ $category->name }}
@@ -33,13 +30,13 @@
                     <div class="row g-3" id="productGrid">
                         @foreach ($categories as $category)
                             @foreach ($category->products as $product)
-                                <div class="col-6 col-sm-4 col-xl-3 mb-3 product-item"
-                                    data-category-id="{{ $category->id }}">
+                                <div class="col-6 col-sm-4 col-xl-3  product-item" data-category-id="{{ $category->id }}">
                                     <div class="card-soft product-card" data-id="{{ $product->id }}"
                                         data-name="{{ $product->name }}" data-price="{{ $product->price }}">
                                         <div class="product-content">
                                             <div class="product-name">{{ $product->name }}</div>
-                                            <div class="product-price">₨ {{ number_format($product->price, 2) }}</div>
+                                            {{-- <div class="product-price">₨ {{ number_format($product->price, 2) }}</div> --}}
+                                            <div class="btn-add"><i class="bi bi-plus"></i><span>ADD</span></div>
                                         </div>
                                     </div>
                                 </div>
@@ -171,15 +168,14 @@
     </div>
 @endsection
 @push('scripts')
-<script>
-    window.restaurantInfo = {
-        name: "{{ $restaurantSettings['restaurant_name'] ?? 'Restaurant' }}",
-        address: "{{ $restaurantSettings['restaurant_address'] ?? '' }}",
-        phone: "{{ $restaurantSettings['restaurant_phone'] ?? '' }}",
-        
-    };
-</script>
+    <script>
+        window.restaurantInfo = {
+            name: "{{ $restaurantSettings['restaurant_name'] ?? 'Restaurant' }}",
+            address: "{{ $restaurantSettings['restaurant_address'] ?? '' }}",
+            phone: "{{ $restaurantSettings['restaurant_phone'] ?? '' }}",
+
+        };
+    </script>
 
     <script src="{{ asset('assets/js/pos.js') }}"></script>
-    
 @endpush

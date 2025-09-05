@@ -48,7 +48,7 @@
 
         .nav-tabs .nav-link.active {
             color: #fff;
-            background: linear-gradient(135deg, #007bff, #0056d2);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
         }
 
@@ -74,7 +74,7 @@
         .card-title {
             font-size: 18px;
             font-weight: 600;
-            color: #007bff;
+            color: var(--primary-color);
             margin: 0;
         }
 
@@ -93,13 +93,13 @@
         }
 
         .form-control:focus, .form-select:focus {
-            border-color: #007bff;
+            border-color: var(--primary-color);
             box-shadow: 0 0 6px rgba(0, 123, 255, 0.25);
         }
 
         /* Buttons */
         .btn-primary {
-            background: linear-gradient(135deg, #007bff, #0056d2);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             border: none;
             border-radius: 8px;
             padding: 10px 18px;
@@ -109,7 +109,7 @@
         }
 
         .btn-primary:hover {
-            background: linear-gradient(135deg, #0056d2, #003f99);
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-darker));
             transform: translateY(-2px);
             box-shadow: 0 8px 18px rgba(0, 123, 255, 0.4);
         }
@@ -128,6 +128,21 @@
             border-radius: 8px;
             font-weight: 500;
             box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Color input styling */
+        .color-input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            display: inline-block;
         }
     </style>
 
@@ -171,7 +186,7 @@
                         <h5 class="card-title">Restaurant Details</h5>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('settings.restaurant.update') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('settings.restaurant.update') }}" method="POST" enctype="multipart/form-data" id="restaurantForm">
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -204,6 +219,15 @@
                                 <div class="col-md-4 mb-3">
                                     <label for="tax_id" class="form-label">Tax ID</label>
                                     <input type="text" class="form-control" id="tax_id" name="tax_id" value="{{ old('tax_id', $restaurantSettings['restaurant_tax_id'] ?? '') }}">
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="color_id" class="form-label">Theme Color</label>
+                                    <div class="color-input-container">
+                                        <input type="color" class="form-control" id="color_id" name="color_id" value="{{ old('color_id', $restaurantSettings['restaurant_color_id'] ?? '#007bff') }}">
+                                        <span class="color-preview" id="colorPreview" style="background-color: {{ $restaurantSettings['restaurant_color_id'] ?? '#007bff' }}"></span>
+                                    </div>
+                                    <small class="form-text text-muted">This color will be used for buttons, headers, and other UI elements</small>
                                 </div>
                             </div>
 
@@ -273,6 +297,64 @@
         new bootstrap.Tab(triggerEl);
     });
 
- 
+    // Color picker functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const colorInput = document.getElementById('color_id');
+        const colorPreview = document.getElementById('colorPreview');
+        const primaryColor = '{{ $restaurantSettings["restaurant_color_id"] ?? "#007bff" }}';
+        
+        // Apply the saved color to the UI
+        applyThemeColor(primaryColor);
+        
+        // Update preview when color changes
+        colorInput.addEventListener('input', function() {
+            colorPreview.style.backgroundColor = this.value;
+            applyThemeColor(this.value);
+        });
+        
+        // Reset to saved color when form is reset
+        document.getElementById('restaurantForm').addEventListener('reset', function() {
+            setTimeout(function() {
+                applyThemeColor(primaryColor);
+            }, 0);
+        });
+    });
+    
+    // Function to apply theme color to UI elements
+    function applyThemeColor(color) {
+        document.documentElement.style.setProperty('--primary-color', color);
+        
+        // Calculate darker shades for gradients
+        const darkerColor = shadeColor(color, -20);
+        const darkestColor = shadeColor(color, -40);
+        
+        document.documentElement.style.setProperty('--primary-dark', darkerColor);
+        document.documentElement.style.setProperty('--primary-darker', darkestColor);
+    }
+    
+    // Helper function to lighten or darken a color
+    function shadeColor(color, percent) {
+        let R = parseInt(color.substring(1, 3), 16);
+        let G = parseInt(color.substring(3, 5), 16);
+        let B = parseInt(color.substring(5, 7), 16);
+
+        R = parseInt(R * (100 + percent) / 100);
+        G = parseInt(G * (100 + percent) / 100);
+        B = parseInt(B * (100 + percent) / 100);
+
+        R = (R < 255) ? R : 255;
+        G = (G < 255) ? G : 255;
+        B = (B < 255) ? B : 255;
+
+        R = (R < 0) ? 0 : R;
+        G = (G < 0) ? 0 : G;
+        B = (B < 0) ? 0 : B;
+
+        const RR = ((R.toString(16).length === 1) ? "0" + R.toString(16) : R.toString(16));
+        const GG = ((G.toString(16).length === 1) ? "0" + G.toString(16) : G.toString(16));
+        const BB = ((B.toString(16).length === 1) ? "0" + B.toString(16) : B.toString(16));
+
+        return "#" + RR + GG + BB;
+    }
 </script>
 @endsection

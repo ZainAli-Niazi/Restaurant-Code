@@ -1,43 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>KOT - Order #{{ $order->order_number }}</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        .kot-box { width: 100%; padding: 20px; border: 1px dashed #000; }
-        .header { text-align: center; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
-        th { background: #eee; }
-    </style>
-</head>
-<body>
-    <div class="kot-box">
-        <div class="header">
-            <h2>KOT (Kitchen Order Ticket)</h2>
-            <p>Order #{{ $order->order_number }}</p>
-        </div>
-        <p><strong>Date:</strong> {{ $order->created_at->format('d/m/Y H:i') }}</p>
-        <p><strong>Table:</strong> {{ $order->table_number ?? '-' }}</p>
+  <meta charset="utf-8">
+  <title>KOT - Order #{{ $order->id }}</title>
+  <style>
+    /* ===== Global Styling ===== */
+    * {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+    }
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Qty</th>
-                    <th>Remarks</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($order->orderItems as $item)
-                <tr>
-                    <td>{{ $item->product->name }}</td>
-                    <td>{{ $item->quantity }}</td>
-                    <td>{{ $item->remarks ?? '-' }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+    body {
+      width: 58mm;
+      margin: 0 auto;
+      padding: 5px;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .line {
+      border-top: 1px dashed #000;
+      margin: 5px 0;
+    }
+
+    /* ===== KOT Header ===== */
+    .kot-title {
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .order-info {
+      font-size: 13px;
+      font-weight: bold;
+      margin-top: 2px;
+      margin-bottom: 2px;
+    }
+
+    .order-meta {
+      font-size: 12px;
+      margin-bottom: 2px;
+    }
+
+    /* ===== Table Styling ===== */
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+    }
+
+    .table th {
+      text-align: left;
+      padding: 4px 0;
+      font-weight: bold;
+      font-size: 13px;
+      border-bottom: 1px solid #000;
+    }
+
+    .table td {
+      padding: 3px 0;
+      font-size: 13px;
+    }
+
+    /* ===== Highlighted Qty ===== */
+    .qty {
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /* ===== Footer Styling ===== */
+    .footer {
+      margin-top: 6px;
+      font-size: 11px;
+      text-align: center;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body onload="window.print()">
+
+  <!-- KOT Header -->
+  <div class="text-center">
+    <div class="kot-title">Kitchen Order Ticket</div>
+    <div class="order-info">Order #{{ $order->id }}</div>
+    <div class="order-meta">Table: <strong>{{ $order->table_number ?? '-' }}</strong></div>
+    <div class="order-meta">Time: {{ $order->created_at->format('d M Y - H:i') }}</div>
+  </div>
+
+  <div class="line"></div>
+
+  <!-- KOT Items Table -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th style="text-align:center;">Qty</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach ($order->orderItems as $item)
+        <tr>
+          <td>{{ $item->product->name }}</td>
+          <td class="qty">{{ $item->quantity }}</td>
+        </tr>
+      @endforeach
+    </tbody>
+  </table>
+
+  <div class="line"></div>
+
+  <!-- Footer -->
+  <div class="footer">
+    Please prepare the order quickly.
+  </div>
+
 </body>
 </html>

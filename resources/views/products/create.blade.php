@@ -3,7 +3,6 @@
 @section('title', 'Add New Product')
 @section('header', $restaurantSettings['restaurant_name'] ?? 'Restaurant')
 
-
 @section('content')
 <div class="container-fluid px-0">
     <div class="card shadow mb-4">
@@ -78,6 +77,7 @@
                             @enderror
                         </div>
                         
+                        <!-- Product Image -->
                         <div class="form-group mb-4">
                             <label for="image" class="form-label">Product Image</label>
                             <input type="file" class="form-control @error('image') is-invalid @enderror" 
@@ -85,20 +85,7 @@
                             @error('image')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <small class="text-muted">Max 2MB. Allowed: jpeg,png,jpg,gif</small>
-                        </div>
-                        
-                        <div class="form-group mb-4">
-                            <label for="image" class="form-label">Product Image</label>
-                            <select class="form-control @error('image') is-invalid @enderror" 
-                                   id="image" name="image" accept="image/*">
-                                <option value="burger"><img src="" alt=""></option>
-                            </select>
-                                   
-                            @error('image')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="text-muted">Max 2MB. Allowed: jpeg,png,jpg,gif</small>
+                            <small class="text-muted">Max 2MB. Allowed: jpeg, png, jpg, gif</small>
                         </div>
                     </div>
                 </div>
@@ -125,7 +112,6 @@
                 </div>
                 
                 <div class="d-flex justify-content-between border-top pt-4">
-                    
                     <div>
                         <a href="{{ route('products.index') }}" class="btn btn-secondary me-2">
                             <i class="bi bi-x-circle"></i> Cancel
@@ -141,7 +127,6 @@
 </div>
 
 <style>
-    
     .card-header { 
         border-bottom: 1px solid #e3e6f0;
     }
@@ -158,5 +143,4 @@
         padding: 0.5rem 1.25rem;
     }
 </style>
-
 @endsection

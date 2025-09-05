@@ -16,46 +16,71 @@ class DashboardController extends Controller
     public function index()
     {
         $today = Carbon::today();
-        
-        // Today's sales
+
+        // === Dashboard KPIs ===
         $todaySales = Order::whereDate('created_at', $today)
             ->where('status', 'completed')
             ->sum('total_amount');
-        
-        // Today's orders
+
         $todayOrders = Order::whereDate('created_at', $today)->count();
-        
-        // Today's expenses
         $todayExpenses = Expense::whereDate('date', $today)->sum('amount');
-        
-        // Current shift balance
+
         $currentShift = Shift::whereNull('end_time')->first();
         $shiftBalance = $currentShift ? ($currentShift->ending_cash ?? $currentShift->starting_cash) : 0;
-        
-        // Top selling items today
+
+        // === Top Selling Products (Today) ===
         $topSellingItems = OrderItem::with('product')
-            ->whereHas('order', function($query) use ($today) {
+            ->whereHas('order', function ($query) use ($today) {
                 $query->whereDate('created_at', $today)
-                      ->where('status', 'completed');
+                    ->where('status', 'completed');
             })
-            ->select('product_id', DB::raw('SUM(quantity) as total_quantity'), DB::raw('SUM(total) as total_amount'))
+            ->select(
+                'product_id',
+                DB::raw('SUM(quantity) as total_quantity'),
+                DB::raw('SUM(total) as total_amount')
+            )
             ->groupBy('product_id')
             ->orderByDesc('total_quantity')
             ->limit(5)
             ->get();
-        
-        // Low stock items
+
+        // === Low Stock Products ===
         $lowStockItems = Product::where('stock', '<', 10)
             ->orderBy('stock')
             ->limit(5)
             ->get();
-        
-        // Recent orders
+
+        // === Recent Orders ===
         $recentOrders = Order::with('orderItems.product')
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
-        
+
+        // === Sales Chart Data (Last 30 Days) ===
+        $startDate = Carbon::now()->subDays(29)->startOfDay(); // ✅ Changed from 6 to 29
+        $endDate = Carbon::now()->endOfDay();
+
+        $salesData = Order::select(
+                DB::raw('DATE(created_at) as date'),
+                DB::raw('SUM(total_amount) as total_sales')
+            )
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->where('status', 'completed')
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('date', 'ASC')
+            ->get();
+
+        // === Prepare Data for Chart ===
+        $chartLabels = [];
+        $chartData = [];
+
+        for ($date = $startDate->copy(); $date->lte($endDate); $date->addDay()) {
+            $formattedDate = $date->format('Y-m-d');
+            $chartLabels[] = $date->format('d M');
+            $daySales = $salesData->firstWhere('date', $formattedDate);
+            $chartData[] = $daySales ? (float) $daySales->total_sales : 0;
+        }
+
         return view('admin.dashboard', compact(
             'todaySales',
             'todayOrders',
@@ -63,7 +88,9 @@ class DashboardController extends Controller
             'shiftBalance',
             'topSellingItems',
             'lowStockItems',
-            'recentOrders'
+            'recentOrders',
+            'chartLabels',
+            'chartData'
         ));
     }
 }

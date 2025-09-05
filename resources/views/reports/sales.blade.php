@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Sales Report')
-@section('header', 'Sales Analytics Report')
+@section('header', $restaurantSettings['restaurant_name'] ?? 'Restaurant')
 
 @section('content')
 <div class="container-fluid px-0">
@@ -165,15 +165,16 @@
     </div>
 </div>
 @endsection
-
-@push('scripts')
+ 
+{{-- Chart.js Script --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+{{-- XLSX Script for Excel Export --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize Sales Chart
         const ctx = document.getElementById('salesChart').getContext('2d');
+
         const salesChart = new Chart(ctx, {
             type: 'bar',
             data: {
@@ -184,7 +185,8 @@
                         data: {!! json_encode($salesData->pluck('revenue')) !!},
                         backgroundColor: 'rgba(54, 162, 235, 0.7)',
                         borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1,
+                        borderWidth: 2,
+                        borderRadius: 6,
                         yAxisID: 'y'
                     },
                     {
@@ -192,17 +194,51 @@
                         data: {!! json_encode($salesData->pluck('orders')) !!},
                         backgroundColor: 'rgba(75, 192, 192, 0.7)',
                         borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1,
                         type: 'line',
+                        tension: 0.3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: 'rgba(75, 192, 192, 1)',
+                        pointRadius: 5,
+                        pointHoverRadius: 8,
+                        fill: false,
                         yAxisID: 'y1'
                     }
                 ]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 interaction: {
-                    mode: 'index',
+                    mode: 'nearest',
                     intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#333',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#222',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) label += ': ';
+                                if (context.datasetIndex === 0) {
+                                    label += 'Rs ' + context.parsed.y.toLocaleString();
+                                } else {
+                                    label += context.parsed.y;
+                                }
+                                return label;
+                            }
+                        }
+                    }
                 },
                 scales: {
                     y: {
@@ -211,10 +247,12 @@
                         position: 'left',
                         title: {
                             display: true,
-                            text: 'Revenue (Rs)'
+                            text: 'Revenue (Rs)',
+                            font: { size: 14, weight: 'bold' }
                         },
                         grid: {
-                            drawOnChartArea: false
+                            drawOnChartArea: true,
+                            color: '#eee'
                         }
                     },
                     y1: {
@@ -223,28 +261,11 @@
                         position: 'right',
                         title: {
                             display: true,
-                            text: 'Number of Orders'
+                            text: 'Orders',
+                            font: { size: 14, weight: 'bold' }
                         },
                         grid: {
                             drawOnChartArea: false
-                        }
-                    }
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.datasetIndex === 0) {
-                                    label += 'Rs ' + context.parsed.y.toFixed(2);
-                                } else {
-                                    label += context.parsed.y;
-                                }
-                                return label;
-                            }
                         }
                     }
                 }
@@ -272,4 +293,3 @@
         }
     });
 </script>
-@endpush

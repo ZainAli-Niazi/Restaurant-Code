@@ -73,8 +73,10 @@ $(document).ready(function () {
 
 //   -----------------------------------------------------POS Screen------------------------------------------------------------------- 
 
- 
 
+/* =========================
+   POS Frontend — Optimized
+   ========================= */
 // ===== Config =====
 const CURRENCY_SYMBOL = '₨';
 
@@ -87,14 +89,12 @@ const STORAGE_KEY = 'pos_order_state_v1';
 const currency = (n) => `${CURRENCY_SYMBOL} ${Number(n || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
 const safeNum = (v) => { const n = Number(String(v).toString().replace(/[^\d.-]/g, '')); return isNaN(n) ? 0 : n; };
 
-// Read number from an element that displays money (supports data-value if present)
 function readMoneyFromEl($el) {
   const dataVal = $el.data('value');
   if (typeof dataVal !== 'undefined') return safeNum(dataVal);
   return safeNum($el.text());
 }
 
-// Write number to an element and keep raw in data-value for safety
 function writeMoneyToEl($el, num) {
   $el.data('value', Number(num));
   $el.text(currency(num));
@@ -198,7 +198,6 @@ function recalcTotals() {
     subTotal += (gross - disc);
   });
 
-  // Inputs
   const service = Math.max(0, safeNum($('#serviceCharges').val()));
   const extraDisc = Math.max(0, safeNum($('#discountAmount').val()));
   const paid = Math.max(0, safeNum($('#paidAmount').val()));
@@ -219,165 +218,48 @@ function recalcTotals() {
   writeMoneyToEl($('#returnAmount'), ret);
 }
 
-// ===== Print helpers (fix about:blank) =====
-function openAndPrint(html) {
-  const w = window.open('', '_blank');
-  if (!w) { showAlert('Pop-up blocked. Please allow pop-ups to print.', 'danger'); return; }
-  w.document.write(html);
-  w.document.close();
-  w.onload = function () {
-    try { w.focus(); w.print(); } finally { /* optional: keep window open for reprint */ }
-  };
-}
-// ===== Invoice & KOT =====
-function generateInvoice() {
-  const tableNumber = $('#tableSelect').val();
-  const orderItems = Array.from(order.values());
+// ===== Print helpers (AJAX based) =====
+function openPrintView(url) {
+  $.ajax({
+    url: url,
+    method: 'GET',
+    success: function (html) {
+      // Remove old iframe if exists
+      $('#printFrame').remove();
 
-  const subTotal = readMoneyFromEl($('#subTotal'));
-  const serviceCharges = Math.max(0, safeNum($('#serviceCharges').val()));
-  const discountAmount = Math.max(0, safeNum($('#discountAmount').val()));
-  const totalAmount = readMoneyFromEl($('#totalAmount'));
-  const paidAmount = Math.max(0, safeNum($('#paidAmount').val()));
+      // Create hidden iframe
+      const $iframe = $('<iframe>', {
+        id: 'printFrame',
+        style: 'display:none;'
+      }).appendTo('body');
 
-  const invoiceContent = `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Invoice</title>
-    <style>
-      * { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4; margin: 0; padding: 0; }
-      body { width: 58mm; margin: 0 auto; background: #fff; color: #000; }
-      .text-center { text-align: center; }
-      .text-right { text-align: right; }
-      .text-left { text-align: left; }
-      .bold { font-weight: bold; }
-      .line { border-top: 1px dashed #000; margin: 5px 0; }
-      .table { width: 100%; border-collapse: collapse; }
-      .table th, .table td { padding: 2px 0; word-break: break-word; }
-      .table td.qty, .table td.price, .table td.total { text-align: right; white-space: nowrap; }
-      .summary td { padding: 2px 0; }
-      .summary td:first-child { text-align: left; }
-      .summary td:last-child { text-align: right; }
-      .grand-total { font-size: 14px; font-weight: bold; }
-      .footer { margin-top: 10px; text-align: center; }
-      @media print { body { width: auto; margin: 0; } }
-    </style>
-  </head>
-  <body onload="window.print()">
+      const iframeDoc = $iframe[0].contentWindow.document;
+      iframeDoc.open();
+      iframeDoc.write(html);
+      iframeDoc.close();
 
-    <!-- HEADER -->
-    <div class="text-center">
-      <div class="bold" style="font-size:16px;">${restaurantInfo.name}</div>
-      <div>${restaurantInfo.address}</div>
-      <div>Phone: ${restaurantInfo.phone}</div>
-    </div>
-    <div class="line"></div>
-
-    <!-- INVOICE INFO -->
-    <div>
-      <div>Table: ${tableNumber || '-'}</div>
-      <div>Date: ${new Date().toLocaleString()}</div>
-    </div>
-    <div class="line"></div>
-
-    <!-- ITEMS -->
-    <table class="table">
-      <thead>
-        <tr>
-          <th class="text-left">Item</th>
-          <th class="qty">Qty</th>
-          <th class="price">Price</th>
-          <th class="total">Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${orderItems.map(item => `
-          <tr>
-            <td>${item.name}</td>
-            <td class="qty">${item.qty}</td>
-            <td class="price">${Number(item.price).toFixed(2)}</td>
-            <td class="total">${(item.price * item.qty * (1 - item.discPct / 100)).toFixed(2)}</td>
-          </tr>`).join('')}
-      </tbody>
-    </table>
-    <div class="line"></div>
-
-    <!-- SUMMARY -->
-    <table class="table summary">
-      <tr><td>Sub Total</td><td>${currency(subTotal)}</td></tr>
-      <tr><td>Service Charges</td><td>${currency(serviceCharges)}</td></tr>
-      <tr><td>Discount</td><td>- ${currency(discountAmount)}</td></tr>
-      <tr class="grand-total"><td>Grand Total</td><td>${currency(totalAmount)}</td></tr>
-    </table>
-    <div class="line"></div>
-
-    <!-- FOOTER -->
-    <div class="footer">
-      <div>Thank you for dining with us!</div>
-    </div>
-
-  </body>
-  </html>`;
-  openAndPrint(invoiceContent);
+      // Wait for content to load, then print
+      $iframe[0].contentWindow.focus();
+      $iframe[0].contentWindow.print();
+    },
+    error: function () {
+      showAlert('Failed to load print view', 'danger');
+    }
+  });
 }
 
-function generateKOT() {
-  const tableNumber = $('#tableSelect').val();
-  const orderItems = Array.from(order.values());
 
-  const kotContent = `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Kitchen Order Ticket</title>
-    <style>
-      * { font-family: Arial, sans-serif; font-size: 12px; line-height: 1.4; margin: 0; padding: 0; }
-      body { width: 58mm; margin: 0 auto; background: #fff; color: #000; }
-      .text-center { text-align: center; }
-      .line { border-top: 1px dashed #000; margin: 5px 0; }
-      .table { width: 100%; border-collapse: collapse; }
-      .table th, .table td { padding: 2px 0; word-break: break-word; }
-      .table th.qty, .table td.qty { text-align: right; white-space: nowrap; }
-      .table th.item, .table td.item { text-align: left; }
-      .footer { margin-top: 10px; text-align: center; }
-      @media print { body { width: auto; margin: 0; } }
-    </style>
-  </head>
-  <body onload="window.print()">
-
-    <!-- HEADER -->
-    <div class="text-center">
-      <div class="bold" style="font-size:14px;">Kitchen Order Ticket</div>
-      <div>Table: ${tableNumber || '-'}</div>
-      <div>Time: ${new Date().toLocaleTimeString()}</div>
-    </div>
-    <div class="line"></div>
-
-    <!-- ITEMS -->
-    <table class="table">
-      <thead>
-        <tr>
-          <th class="item">Item</th>
-          <th class="qty">Qty</th>
-        </tr>
-      </thead>
-      <tbody>
-        ${orderItems.map(item => `
-          <tr>
-            <td class="item">${item.name}</td>
-            <td class="qty">${item.qty}</td>
-          </tr>`).join('')}
-      </tbody>
-    </table>
-
-  </body>
-  </html>`;
-  openAndPrint(kotContent);
+// Print Invoice (requires orderId)
+function printInvoice(orderId) {
+  const url = `/pos/invoice/${orderId}`;
+  openPrintView(url);
 }
 
+// Print KOT (requires orderId)
+function printKOT(orderId) {
+  const url = `/pos/kot/${orderId}`;
+  openPrintView(url);
+}
 
 // ===== Save / Restore (localStorage) =====
 function persistOrder() {
@@ -410,7 +292,7 @@ function restoreOrder() {
   } catch (_) { }
 }
 
-// ===== AJAX (Laravel-friendly) =====
+// ===== AJAX CSRF =====
 (function setupAjaxCsrf() {
   const token = $('meta[name="csrf-token"]').attr('content');
   if (token) {
@@ -418,16 +300,14 @@ function restoreOrder() {
   }
 })();
 
+// ===== Save Order (no reset on save) =====
 function saveOrder(status) {
   if (order.size === 0) {
     showAlert('Please add items to the order', 'danger');
     return;
   }
 
-  // Get the route URL from the hidden input
   const orderStoreUrl = $('#orderStoreRoute').val();
-
-  // Prepare payload
   const items = Array.from(order.values()).map(item => ({
     product_id: item.id,
     quantity: item.qty,
@@ -453,12 +333,10 @@ function saveOrder(status) {
     data: JSON.stringify(payload),
     success: function (response) {
       if (response && response.success) {
+        window.lastSavedOrderId = response.order_id; // store order id globally
         showAlert('Order ' + (status === 'hold' ? 'held' : 'saved') + ' successfully!');
-        if (status === 'completed') {
-          resetOrderUI();
-        } else {
-          persistOrder(); // keep for held orders
-        }
+        // ✅ No reset here, only persist
+        persistOrder();
       } else {
         showAlert('Unexpected response from server.', 'danger');
       }
@@ -477,6 +355,7 @@ function saveOrder(status) {
     }
   });
 }
+
 // ===== Reset UI =====
 function resetOrderUI() {
   order.clear();
@@ -546,14 +425,30 @@ $('#serviceCharges, #discountAmount, #paidAmount').on('input', function () {
 });
 
 $('#btnReset').on('click', resetOrderUI);
-$('#btnPrint').on('click', generateInvoice);
-$('#btnKOT').on('click', generateKOT);
+
+// Now these buttons use new print functions (require saved orderId)
+$('#btnPrint').on('click', function () {
+  if (!window.lastSavedOrderId) {
+    showAlert('Please save the order before printing invoice', 'danger');
+    return;
+  }
+  printInvoice(window.lastSavedOrderId);
+});
+
+$('#btnKOT').on('click', function () {
+  if (!window.lastSavedOrderId) {
+    showAlert('Please save the order before printing KOT', 'danger');
+    return;
+  }
+  printKOT(window.lastSavedOrderId);
+});
+
 $('#btnPaySave').on('click', function () { saveOrder('completed'); });
 $('#btnHold').on('click', function () { saveOrder('hold'); });
 
 // ===== Init =====
 (function init() {
   setActiveCategory('all');
-  restoreOrder(); // load any persisted cart
+  restoreOrder();
   recalcTotals();
 })();

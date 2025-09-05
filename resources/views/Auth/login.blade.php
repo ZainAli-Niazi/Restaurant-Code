@@ -6,135 +6,150 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Laravel 12 | Admin Login</title>
     <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
     <style>
+        /* Body Styling */
         body {
-            background-color: #f8f9fa;
-        }
-
-        .login-container {
-            min-height: 100vh;
+            background: #e0e5ec;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
+            justify-content: center;
             align-items: center;
+            min-height: 100vh;
         }
 
-        .card {
-            border-radius: 15px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            border: none;
-        }
-
-        .card-header {
-            background-color: #fff;
-            border-bottom: none;
+        /* Login Container */
+        .login-box {
+            background: #e0e5ec;
+            padding: 40px 30px;
+            width: 400px;
+            min-height: 380px; /* Increased height */
+            border-radius: 20px;
+            box-shadow:
+                8px 8px 15px #b8b9be,
+                -8px -8px 15px #ffffff;
             text-align: center;
-            padding: 1.2rem 1rem;
         }
 
-        .card-header h4 {
-            margin: 0;
-            font-weight: 700;
-            color: #0d6efd;
+        /* Heading */
+        .login-box h4 {
             font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 25px;
         }
 
-        .btn-primary {
+        /* Input Groups */
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: none;
+            outline: none;
+            background: #e0e5ec;
+            border-radius: 50px;
+            box-shadow:
+                inset 6px 6px 10px #b8b9be,
+                inset -6px -6px 10px #ffffff;
+            font-size: 14px;
+            color: #333;
+        }
+
+        /* Input Icons */
+        .input-group i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 18px;
+        }
+
+        /* Login Button */
+        .btn-login {
+            background: #e0e5ec;
+            border: none;
+            width: 100%;
             padding: 12px;
+            border-radius: 50px;
             font-weight: 600;
-            border-radius: 10px;
+            color: #333;
+            font-size: 16px;
+            box-shadow:
+                6px 6px 10px #b8b9be,
+                -6px -6px 10px #ffffff;
+            transition: 0.2s ease-in-out;
         }
 
-        .form-floating>.form-control,
-        .form-floating>.form-select {
-            border-radius: 10px;
+        .btn-login:hover {
+            box-shadow:
+                inset 4px 4px 8px #b8b9be,
+                inset -4px -4px 8px #ffffff;
         }
 
+        /* Validation Errors */
+        .invalid-feedback {
+            text-align: left;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* Alerts */
         .alert {
             border-radius: 10px;
             font-size: 14px;
-        }
-
-        .divider {
-            height: 1px;
-            background-color: #dee2e6;
-            margin: 1.5rem 0;
+            padding: 8px 10px;
         }
     </style>
 </head>
 
 <body>
-    <section class="login-container">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                    <div class="card">
-                        <!-- Card Header -->
-                        <div class="card-header">
-                            <h4>Login Here</h4>
-                        </div>
+    <div class="login-box">
+        <!-- Heading -->
+        <h4>Login Here</h4>
 
-                        <div class="card-body p-4">
+        <!-- Session Messages -->
+        @if (Session::has('success'))
+            <div class="alert alert-success">{{ Session::get('success') }}</div>
+        @endif
+        @if (Session::has('error'))
+            <div class="alert alert-danger">{{ Session::get('error') }}</div>
+        @endif
 
-                            <!-- Session Messages -->
-                            @if (Session::has('success'))
-                                <div class="alert alert-success">{{ Session::get('success') }}</div>
-                            @endif
-                            @if (Session::has('error'))
-                                <div class="alert alert-danger">{{ Session::get('error') }}</div>
-                            @endif
+        <!-- Login Form -->
+        <form method="POST" action="{{ route('admin.authenticate') }}" novalidate>
+            @csrf
 
-                            <!-- Login Form -->
-                            <form method="POST" action="{{ route('admin.authenticate') }}" novalidate>
-                                @csrf
-                                <div class="row gy-3">
-
-                                    <!-- Username -->
-                                    <div class="col-12">
-                                        <div class="form-floating">
-                                            <input type="text" name="username" id="username"
-                                                class="form-control @error('username') is-invalid @enderror"
-                                                placeholder="Enter username" value="{{ old('username') }}" required>
-                                            <label for="username">Username</label>
-                                            @error('username')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <!-- Password -->
-                                    <div class="col-12">
-                                        <div class="form-floating">
-                                            <input type="password" name="password" id="password"
-                                                class="form-control @error('password') is-invalid @enderror"
-                                                placeholder="Enter password" required>
-                                            <label for="password">Password</label>
-                                            @error('password')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <!-- Submit Button -->
-                                    <div class="col-12">
-                                        <div class="d-grid">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="bi bi-box-arrow-in-right me-2"></i> Login Now
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-
-                            <!-- Divider -->
-                            <div class="divider"></div>
-
-                        </div>
-                    </div> <!-- Card End -->
-                </div>
+            <!-- Username -->
+            <div class="input-group">
+                <input type="text" name="username" id="username"
+                    class="@error('username') is-invalid @enderror"
+                    placeholder="Enter username" value="{{ old('username') }}" required>
+                <i class="fas fa-user"></i>
+                @error('username')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
-        </div>
-    </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+            <!-- Password -->
+            <div class="input-group">
+                <input type="password" name="password" id="password"
+                    class="@error('password') is-invalid @enderror"
+                    placeholder="Enter password" required>
+                <i class="fas fa-lock"></i>
+                @error('password')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn-login">Login</button>
+        </form>
+    </div>
 </body>
-
 </html>

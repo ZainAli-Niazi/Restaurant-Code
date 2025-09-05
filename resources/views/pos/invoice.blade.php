@@ -1,50 +1,159 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <title>Invoice - Order #{{ $order->order_number }}</title>
+    <meta charset="utf-8">
+    <title>{{ strtoupper($restaurantSettings['restaurant_name'] ?? '') }}</title>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .invoice-box { width: 100%; padding: 20px; border: 1px solid #ddd; }
-        .header { text-align: center; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background: #f5f5f5; }
+        @page {
+            margin: 0;
+        }
+
+        body {
+            margin: 10px;
+            width: 80mm;
+            font-family: Arial, sans-serif;
+        }
+
+        * {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .line {
+            border-top: 1px dashed #000;
+            margin: 6px 0;
+        }
+
+        /* Restaurant Header Styling */
+        .restaurant-header {
+            margin-bottom: 5px;
+        }
+
+        .restaurant-logo {
+            max-height: 40px;
+            margin-bottom: 5px;
+        }
+
+        .restaurant-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .restaurant-contact {
+            font-size: 12px;
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+
+        /* Table Styling */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 3px 0;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        .summary td {
+            padding: 3px 0;
+            font-size: 12px;
+        }
+
+        .grand-total {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Thank You Message */
+        .thank-you {
+            margin-top: 6px;
+            font-weight: bold;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
     </style>
 </head>
-<body>
-    <div class="invoice-box">
-        <div class="header">
-            <h2>Invoice</h2>
-            <p>Order #{{ $order->order_number }}</p>
-        </div>
-        <p><strong>Date:</strong> {{ $order->created_at->format('d/m/Y H:i') }}</p>
-        <p><strong>Table:</strong> {{ $order->table_number ?? '-' }}</p>
-        <p><strong>Customer:</strong> {{ $order->customer_name ?? 'Walk-in' }}</p>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Qty</th>
-                    <th>Price</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($order->orderItems as $item)
+<body>
+
+    <!-- HEADER -->
+    <div class="text-center restaurant-header">
+        @if (!empty($restaurantSettings['restaurant_logo']))
+            <img src="{{ asset('storage/' . $restaurantSettings['restaurant_logo']) }}" alt="Logo" class="restaurant-logo">
+        @endif
+        <div class="restaurant-name">{{ strtoupper($restaurantSettings['restaurant_name'] ?? '') }}</div>
+        <div class="restaurant-contact">Phone: {{ $restaurantSettings['restaurant_phone'] ?? '' }}</div>
+        <div class="restaurant-contact">{{ $restaurantSettings['restaurant_address'] ?? '' }}</div>
+    </div>
+
+    <div class="line"></div>
+
+    <!-- ORDER INFO -->
+    <div>
+        <div><strong>Order #:</strong> {{ $order->id }}</div>
+        <div><strong>Table:</strong> {{ $order->table_number ?? '-' }}</div>
+        <div><strong>Date:</strong> {{ $order->created_at->format('d-m-Y H:i') }}</div>
+    </div>
+    <div class="line"></div>
+
+    <!-- ORDER ITEMS -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($order->orderItems as $item)
                 <tr>
                     <td>{{ $item->product->name }}</td>
                     <td>{{ $item->quantity }}</td>
-                    <td>₹{{ number_format($item->price, 2) }}</td>
-                    <td>₹{{ number_format($item->quantity * $item->price, 2) }}</td>
+                    <td>{{ number_format($item->price, 2) }}</td>
+                    <td>{{ number_format($item->total, 2) }}</td>
                 </tr>
-                @endforeach
-            </tbody>
-        </table>
+            @endforeach
+        </tbody>
+    </table>
+    <div class="line"></div>
 
-        <h4 style="text-align:right; margin-top:20px;">
-            Grand Total: ₹{{ number_format($order->total_amount, 2) }}
-        </h4>
-    </div>
+    <!-- SUMMARY -->
+    <table class="table summary">
+        <tr>
+            <td>Sub Total</td>
+            <td>{{ number_format($order->sub_total, 2) }}</td>
+        </tr>
+        <tr>
+            <td>Service Charges</td>
+            <td>{{ number_format($order->service_charges, 2) }}</td>
+        </tr>
+        <tr>
+            <td>Discount</td>
+            <td>- {{ number_format($order->discount_amount, 2) }}</td>
+        </tr>
+        <tr class="grand-total">
+            <td>Grand Total</td>
+            <td>{{ number_format($order->total_amount, 2) }}</td>
+        </tr>
+    </table>
+    <div class="line"></div>
+
+    <!-- FOOTER -->
+    <div class="text-center thank-you">Thank you for dining with us!</div>
+
 </body>
 </html>

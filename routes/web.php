@@ -29,7 +29,9 @@ Route::prefix('admin')->middleware('guest')->group(function () {
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/logout', [LoginController::class, 'logout'])->name('admin.logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/dashboard/live-data', [DashboardController::class, 'getLiveData'])->name('admin.dashboard.live');
 });
+
 
 // 🛠 Admin CRUD Routes (no /admin in URL, but still admin protected)
 Route::middleware(['auth', 'admin'])->group(function () {
@@ -52,7 +54,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::match(['put', 'patch'], '/expenses/{expense}', [ExpenseController::class, 'update'])->name('expenses.update');
     Route::delete('/expenses/{expense}', [ExpenseController::class, 'destroy'])->name('expenses.destroy');
     Route::get('/expenses/export', [ExpenseController::class, 'export'])->name('expenses.export');
-   
+
 
     // Halls
     Route::get('/halls', [HallController::class, 'index'])->name('halls.index');
@@ -68,6 +70,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
+    Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
 
 
     /*
@@ -78,8 +81,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/pos', [POSController::class, 'index'])->name('pos.index');
     Route::post('/pos/order/store', [POSController::class, 'storeOrder'])->name('pos.order.store');
     Route::get('/pos/held-orders', [POSController::class, 'getHeldOrders'])->name('pos.held-orders');
-    Route::get('/pos/invoice/{$id}', [POSController::class, 'invoice'])->name('pos.invoice');
-    Route::get('/pos/kot/{$id}', [POSController::class, 'kot'])->name('pos.kot');
+
+    // Fixed: use {id} not {$id}
+    Route::get('/pos/invoice/{id}', [POSController::class, 'invoice'])->name('pos.invoice');
+    Route::get('/pos/kot/{id}', [POSController::class, 'kot'])->name('pos.kot');
+
 
 
     // Products
@@ -116,17 +122,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::match(['put', 'patch'], '/tables/{table}', [TableController::class, 'update'])->name('tables.update');
     Route::delete('/tables/{table}', [TableController::class, 'destroy'])->name('tables.destroy');
 
- 
-
-// Settings Routes
-Route::prefix('settings')->group(function () {
-    Route::get('/', [App\Http\Controllers\SettingController::class, 'index'])->name('settings.index');
-    Route::post('/restaurant', [App\Http\Controllers\SettingController::class, 'updateRestaurant'])->name('settings.restaurant.update');
-    Route::post('/tax', [App\Http\Controllers\SettingController::class, 'updateTax'])->name('settings.tax.update');
-    Route::get('/{key}', [App\Http\Controllers\SettingController::class, 'getSetting'])->name('settings.get');
-});
 
 
+  // Settings Routes
+    Route::prefix('settings')->group(function () {
+        Route::get('/', [App\Http\Controllers\SettingController::class, 'index'])->name('settings.index');
+        Route::post('/restaurant', [App\Http\Controllers\SettingController::class, 'updateRestaurant'])->name('settings.restaurant.update');
+        Route::post('/tax', [App\Http\Controllers\SettingController::class, 'updateTax'])->name('settings.tax.update');
+        Route::get('/{key}', [App\Http\Controllers\SettingController::class, 'getSetting'])->name('settings.get');
+    });
 });
 
 // 🔄 Redirect root to admin login
