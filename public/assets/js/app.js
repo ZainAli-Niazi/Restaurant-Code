@@ -452,3 +452,22 @@ $('#btnHold').on('click', function () { saveOrder('hold'); });
   restoreOrder();
   recalcTotals();
 })();
+
+
+
+
+
+
+
+$(function () {
+  const $row = $('#categoryButtons');
+  const step = 200; // pixels to move per click
+
+  $('#catPrev').on('click', function () {
+    $row.animate({ scrollLeft: $row.scrollLeft() - step }, 300);
+  });
+
+  $('#catNext').on('click', function () {
+    $row.animate({ scrollLeft: $row.scrollLeft() + step }, 300);
+  });
+});

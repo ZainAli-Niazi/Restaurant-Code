@@ -221,14 +221,7 @@
                                     <input type="text" class="form-control" id="tax_id" name="tax_id" value="{{ old('tax_id', $restaurantSettings['restaurant_tax_id'] ?? '') }}">
                                 </div>
                                 
-                                <div class="col-md-4 mb-3">
-                                    <label for="color_id" class="form-label">Theme Color</label>
-                                    <div class="color-input-container">
-                                        <input type="color" class="form-control" id="color_id" name="color_id" value="{{ old('color_id', $restaurantSettings['restaurant_color_id'] ?? '#007bff') }}">
-                                        <span class="color-preview" id="colorPreview" style="background-color: {{ $restaurantSettings['restaurant_color_id'] ?? '#007bff' }}"></span>
-                                    </div>
-                                    <small class="form-text text-muted">This color will be used for buttons, headers, and other UI elements</small>
-                                </div>
+                                
                             </div>
 
                             <div class="mb-3">

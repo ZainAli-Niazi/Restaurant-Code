@@ -22,6 +22,10 @@
             <a href="{{ route('categories.create') }}" class="btn btn-primary shadow px-4 py-2 rounded-pill">
                 <i class="bi bi-tags me-1"></i> Add Category
             </a>
+
+             <a href="{{ route('categories.index') }}" class="btn btn-primary shadow px-4 py-2 rounded-pill">
+                <i class="bi bi-card-checklist"></i>  All Category
+            </a>
         </div>
     </div>
 
