@@ -163,10 +163,10 @@ function appendOrderRow(row) {
       <td><div class="fw-semibold text-truncate">${row.name}</div></td>
       <td class="text-end price">${row.price}</td>
       <td class="text-center">
-        <input type="number" class="form-control form-control-sm qty" value="${row.qty}" min="1" style="width:80px;display:inline-block;">
+        <input type="number" class="form-control form-control-sm qty" value="${row.qty}" min="1" style="width:40px;display:inline-block;">
       </td>
       <td class="text-center">
-        <input type="number" class="form-control form-control-sm disc" value="${row.discPct}" min="0" max="100" style="width:90px;display:inline-block;">
+        <input type="number" class="form-control form-control-sm disc" value="${row.discPct}" min="0" max="100" style="width:40px;display:inline-block;">
       </td>
       <td class="text-end row-total">${row.price * row.qty * (1 - row.discPct / 100)}</td>
       <td class="text-center">
