@@ -1,68 +1,117 @@
 @extends('layouts.app')
 
 @section('title', 'Category Management')
-@section('header', 'Category Management')
+@section('header', $restaurantSettings['restaurant_name'] ?? 'Restaurant')
 
 @section('content')
-<div class="container-fluid px-4">
+<div class="container-fluid px-0">
+
+    <!-- Header Section -->
     <div class="row mb-4 align-items-center">
         <div class="col-md-6">
-            <h2 class="mb-0">Category Management</h2>
+            <h2 class="mb-0 fw-semibold">
+                <i class="bi bi-tags me-2"></i> Category Management
+            </h2>
         </div>
         <div class="col-md-6 text-end">
-            <a href="{{ route('categories.create') }}" class="btn btn-primary btn-sm">
+            <!-- Add Category -->
+            <a href="{{ route('categories.create') }}" class="btn btn-success shadow px-4 py-2 rounded-pill me-2">
                 <i class="bi bi-plus-lg me-1"></i> Add Category
+            </a>
+
+            <!-- Add Product -->
+            <a href="{{ route('products.create') }}" class="btn btn-primary shadow px-4 py-2 rounded-pill me-2">
+                <i class="bi bi-box-seam me-1"></i> Add Product
+            </a>
+
+            <!-- All Products -->
+            <a href="{{ route('products.index') }}" class="btn btn-primary shadow px-4 py-2 rounded-pill">
+                <i class="bi bi-card-list me-1"></i> All Products
             </a>
         </div>
     </div>
 
+    <!-- Categories Table -->
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light sticky-top">
                         <tr>
-                            <th width="50">#</th>
-                            <th>Category Name</th>
-                            <th width="120">Status</th>
-                            <th width="100">Products</th>
-                            <th width="120" class="text-center">Actions</th>
+                            <th class="ps-4">#</th>
+                            <th>Icon</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Products</th>
+                            <th>Created</th>
+                            <th class="text-end pe-4">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($categories as $category)
+                        @forelse ($categories as $category)
                         <tr>
-                            <td>{{ $loop->iteration }}</td>
+                            <td class="ps-4">{{ $loop->iteration }}</td>
+
+                            <!-- Category Icon -->
                             <td>
-                                <div class="d-flex align-items-center">
-                                    <div class="bg-secondary rounded-circle me-3 d-flex align-items-center justify-content-center" 
-                                         style="width: 40px; height: 40px;">
-                                        <i class="bi bi-folder text-white"></i>
+                                @if($category->icon)
+                                    <img src="{{ asset('category-icons/' . $category->icon) }}"
+                                        alt="{{ $category->name }}"
+                                        width="40" height="40"
+                                        class="rounded border"
+                                        style="object-fit: cover;">
+                                @else
+                                    <div class="bg-light rounded d-flex align-items-center justify-content-center border"
+                                        style="width:40px;height:40px;">
+                                        <i class="bi bi-image text-muted"></i>
                                     </div>
-                                    <span>{{ $category->name }}</span>
-                                </div>
+                                @endif
                             </td>
+
+                            <!-- Category Name -->
+                            <td class="fw-semibold text-dark">
+                                {{ $category->name }}
+                            </td>
+
+                            <!-- Status -->
                             <td>
-                                <span class="badge bg-{{ $category->status ? 'success' : 'danger' }} rounded-pill">
+                                <span class="badge rounded-pill bg-{{ $category->status ? 'success' : 'secondary' }}">
                                     {{ $category->status ? 'Active' : 'Inactive' }}
                                 </span>
                             </td>
+
+                            <!-- Product Count -->
                             <td>
+                                
                                 <span class="badge bg-primary rounded-pill">
                                     {{ $category->products_count }}
                                 </span>
+                          
                             </td>
-                           
-                             <!-- Actions -->
+ 
+
+                            <!-- Created Date -->
+                            <td>
+                                <small class="text-muted" data-bs-toggle="tooltip"
+                                    title="{{ $category->created_at->format('M j, Y g:i A') }}">
+                                    {{ $category->created_at->diffForHumans() }}
+                                </small>
+                            </td>
+
+                            <!-- Actions -->
                             <td class="text-end pe-4">
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <!-- Edit Button -->
-                                    <a href="{{ route('categories.edit', $category->id) }}"
-                                        class="btn-action edit-btn" data-bs-toggle="tooltip" title="Edit">
+                                    <!-- Edit -->
+                                    <a href="{{ route('categories.edit', $category) }}"
+                                        class="btn-action edit-btn"
+                                        data-bs-toggle="tooltip" title="Edit Category">
                                         <i class="bi bi-pencil"></i>
                                     </a>
+ 
 
-                                    <!-- Delete Button -->
+                                  
+                                     
+                                       <!-- Delete Button -->
                                     <form action="{{ route('categories.destroy', $category->id) }}" method="POST"
                                         class="d-inline">
                                         @csrf
@@ -78,33 +127,20 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="text-center py-4">
-                                <div class="d-flex flex-column align-items-center">
-                                    <i class="bi bi-folder-x text-muted" style="font-size: 2rem;"></i>
-                                    <p class="text-muted mt-2 mb-0">No categories found</p>
-                                    <a href="{{ route('categories.create') }}" class="btn btn-sm btn-primary mt-2">
-                                        <i class="bi bi-plus-lg me-1"></i> Create Category
-                                    </a>
-                                </div>
+                            <td colspan="7" class="text-center py-5 text-muted">
+                                <i class="bi bi-folder-x display-6 d-block mb-2"></i>
+                                No categories found
                             </td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
-            
-            @if($categories->hasPages())
-            <div class="card-footer bg-white border-top-0">
-                <div class="d-flex justify-content-center">
-                    {{ $categories->links() }}
-                </div>
-            </div>
-            @endif
+ 
         </div>
     </div>
 </div>
 @endsection
-
 
 @section('styles')
 <style>
@@ -113,10 +149,10 @@
         display: inline-flex;
         justify-content: center;
         align-items: center;
+        padding: 10px;
         width: 34px;
         height: 34px;
         border-radius: 50%;
-     
         border: none;
         background: #f8f9fa;
         color: #6c757d;
@@ -138,9 +174,14 @@
     .delete-btn:hover {
         background-color: #dc3545;
     }
+
+    .info-btn:hover {
+        background-color: #0dcaf0;
+    }
+
+  
 </style>
 @endsection
-
 
 @section('scripts')
 <script>
