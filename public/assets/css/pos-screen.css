@@ -184,7 +184,7 @@ body {
 
 :root {
   --first-color: #0d6efd;
-  --first-color-hover: #0d6efd;
+  --first-color-hover: #b9d5ff;
 }
 
 /* Top-right arrows container */
@@ -197,8 +197,9 @@ body {
   z-index: 5;
 }
 
-/* Circular arrow buttons */
+/* Hide arrows by default, show only when needed */
 .cat-arrow {
+  display: none;
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -212,6 +213,10 @@ body {
   transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
 }
 
+.cat-arrow.show {
+  display: grid;
+}
+
 .cat-arrow:hover {
   background: var(--first-color-hover);
   box-shadow: 0 4px 8px rgba(0, 0, 0, .15);
@@ -222,16 +227,45 @@ body {
   display: none;
 }
 
+/* Category Icon Styles */
+.category-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 8px auto;
+ 
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+ 
+
+.category-name {
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.2;
+  margin-top: 4px;
+}
+
 /* Individual category buttons */
 .category-btn {
-  padding: 28px 14px;
+  padding: 16px 12px;
   border: 1px solid rgba(0, 0, 0, .1);
   border-radius: 12px;
   background: #fff;
   font-size: 14px;
   cursor: pointer;
-  transition: transform .15s ease;
-  flex: 1;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  flex: 0 0 calc(20% - 8px); /* Exactly 5 items per row (20% width minus gap) */
+  min-width: 0;
 }
 
 .category-btn:hover {
@@ -245,6 +279,14 @@ body {
   border-color: var(--first-color);
 }
 
+.category-btn.active .category-icon-wrapper {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.category-btn.active .category-icon {
+  filter: brightness(0) invert(1);
+}
+
 /* Hover Card Global */
 .hover-effect:hover {
   transform: translateY(-2px);
@@ -253,17 +295,18 @@ body {
   background: #0d6efd20;
 }
 
+/* Category Row - Fixed 5 items per row */
 .category-row {
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
   gap: 10px;
+  scroll-behavior: smooth;
 }
 
 .category-row .category-btn {
-  flex: 1 1 0;
-  min-width: 120px;
-  text-align: center;
+  flex: 0 0 calc(20% - 8px); /* Exactly 5 per row */
+  min-width: 0;
 }
 
 .category-row::-webkit-scrollbar {

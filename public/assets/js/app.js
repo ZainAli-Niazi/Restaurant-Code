@@ -457,17 +457,35 @@ $('#btnHold').on('click', function () { saveOrder('hold'); });
 
 
 
+// ===== Category Scroll Arrows =====
 
-
-$(function () {
+ $(function () {
   const $row = $('#categoryButtons');
+  const $prevBtn = $('#catPrev');
+  const $nextBtn = $('#catNext');
   const step = 200; // pixels to move per click
-
-  $('#catPrev').on('click', function () {
+  
+  // Function to check if arrows should be visible
+  function checkArrowVisibility() {
+    const categoryCount = $row.children('.category-btn').length;
+    
+    if (categoryCount > 5) {
+      $prevBtn.addClass('show');
+      $nextBtn.addClass('show');
+    } else {
+      $prevBtn.removeClass('show');
+      $nextBtn.removeClass('show');
+    }
+  }
+  
+  // Check visibility on page load
+  checkArrowVisibility();
+  
+  $prevBtn.on('click', function () {
     $row.animate({ scrollLeft: $row.scrollLeft() - step }, 300);
   });
 
-  $('#catNext').on('click', function () {
+  $nextBtn.on('click', function () {
     $row.animate({ scrollLeft: $row.scrollLeft() + step }, 300);
   });
 });
