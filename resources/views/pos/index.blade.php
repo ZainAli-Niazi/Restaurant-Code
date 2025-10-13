@@ -62,10 +62,15 @@
                     <div id="categoryButtons" class="category-row">
                         @foreach ($categories as $category)
                             <button class="category-btn hover-effect" data-id="{{ $category->id }}">
-                                {{ $category->name }}
+                                <div class="category-icon-wrapper">
+                                    <img src="{{ asset('category-icons/' . $category->icon) }}" alt="{{ $category->name }}"
+                                        class="category-icon">
+                                </div>
+                                <span class="category-name">{{ $category->name }}</span>
                             </button>
                         @endforeach
                     </div>
+
                 </div>
 
 
