@@ -12,7 +12,7 @@ class Category extends Model
 
     protected $fillable = [
         'name',
-        'description',
+        'icon', // Add icon to fillable
         'status'
     ];
 
