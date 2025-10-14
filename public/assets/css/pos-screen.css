@@ -33,7 +33,7 @@ body {
 }
 
 .product-card:hover {
-  transform: translateY(-2px);
+ 
   box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
   border-color: #0d6efd;
   background: #0d6efd20;
@@ -278,7 +278,7 @@ body {
 
 .category-btn:hover {
   background: rgba(0, 0, 0, .05);
-  transform: translateY(-1px);
+  
 }
 
 .category-btn.active {
@@ -289,13 +289,13 @@ body {
 
  
 
-.category-btn.active .category-icon {
+/* .category-btn.active .category-icon {
   filter: brightness(0) invert(1);
-}
+} */
 
 /* Hover Card Global */
 .hover-effect:hover {
-  transform: translateY(-2px);
+  
   box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
   border-color: #0d6efd;
   background: #0d6efd20;
@@ -314,11 +314,7 @@ body {
   flex: 0 0 calc(20% - 8px); /* Exactly 5 per row */
   min-width: 0;
 }
-
-.category-row::-webkit-scrollbar {
-  display: none;
-}
-
+ 
 /* ===== POS Two-Column Layout ===== */
 .pos-container {
   padding-bottom: 180px;
