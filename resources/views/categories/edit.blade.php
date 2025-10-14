@@ -13,7 +13,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <h5 class="mb-0">Edit Category: {{ $category->name }}</h5>
-                                <p class="text-muted mb-0">Update category information and icon</p>
+                               
                             </div>
                             <div class="d-flex gap-2 align-items-center">
                                 <span class="badge bg-light text-dark">
@@ -135,9 +135,7 @@
                             <div class="row mt-4">
                                 <div class="col-12">
                                     <div class="d-flex justify-content-end gap-2 border-top pt-4">
-                                        <a href="{{ route('categories.index') }}" class="btn btn-outline-secondary px-4">
-                                            <i class="bi bi-x-circle me-2"></i>Cancel
-                                        </a>
+                                        
                                         <button type="submit" class="btn btn-primary px-4">
                                             <i class="bi bi-check-circle me-2"></i>Update Category
                                         </button>
