@@ -7,10 +7,12 @@
     <style>
         @page {
             margin: 0;
+              width: 80mm;
         }
 
         body {
             margin: 10px;
+           
             width: 80mm;
             font-family: Arial, sans-serif;
         }
