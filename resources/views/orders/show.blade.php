@@ -4,9 +4,9 @@
 @section('header', 'Order Details')
 
 @section('content')
-<div class="container-fluid px-4">
+<div class="container-fluid ">
     <div class="row">
-        <div class="col-lg-8 offset-lg-2">
+        <div class=" ">
 
             <div class="card shadow-lg border-0 rounded-4">
                 <!-- Header -->
@@ -14,12 +14,10 @@
                     <h4 class="mb-0 fw-bold">
                         <i class="bi bi-receipt-cutoff me-2"></i> Order #{{ $order->order_number }}
                     </h4>
-                    <a href="{{ route('orders.index') }}" class="btn btn-light btn-sm rounded-pill shadow-sm">
-                        <i class="bi bi-arrow-left-circle me-1"></i> Back
-                    </a>
+                    
                 </div>
 
-                <div class="card-body px-4 py-4">
+                <div class="card-body px-4  ">
                     <!-- Order Info -->
                     <div class="row mb-4">
                         <div class="col-md-6">
@@ -96,12 +94,7 @@
 
                     <!-- Action Buttons -->
                     <div class="d-flex justify-content-end gap-3 mt-4">
-                        <a href="{{ route('pos.invoice', $order->id) }}" target="_blank" class="btn btn-info shadow-sm rounded-pill px-4">
-                            <i class="bi bi-printer-fill me-1"></i> Print Invoice
-                        </a>
-                        <a href="{{ route('pos.kot', $order->id) }}" target="_blank" class="btn btn-secondary shadow-sm rounded-pill px-4">
-                            <i class="bi bi-printer me-1"></i> Print KOT
-                        </a>
+                        
                         <a href="{{ route('orders.index') }}" class="btn btn-dark shadow-sm rounded-pill px-4">
                             <i class="bi bi-arrow-left-circle me-1"></i> Back to Orders
                         </a>

@@ -255,11 +255,7 @@ function printInvoice(orderId) {
   openPrintView(url);
 }
 
-// Print KOT (requires orderId)
-function printKOT(orderId) {
-  const url = `/pos/kot/${orderId}`;
-  openPrintView(url);
-}
+// 
 
 // ===== Save / Restore (localStorage) =====
 function persistOrder() {

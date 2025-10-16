@@ -87,12 +87,12 @@
                                         </a>
 
                                         <!-- Invoice -->
-                                        <a href="{{ route('pos.invoice', $order->id) }}" target="_blank" class="btn-action invoice-btn" title="Print Invoice">
+                                        <a href="{{ route('pos.invoice', $order->id) }}"   class="btn-action invoice-btn" title="Print Invoice">
                                             <i class="bi bi-receipt"></i>
                                         </a>
 
                                         <!-- KOT -->
-                                        <a href="{{ route('pos.kot', $order->id) }}" target="_blank" class="btn-action kot-btn" title="Print KOT">
+                                        <a href="{{ route('pos.kot', $order->id) }}" class="btn-action kot-btn" title="Print KOT">
                                             <i class="bi bi-printer"></i>
                                         </a>
 

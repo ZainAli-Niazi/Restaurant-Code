@@ -60,7 +60,7 @@
                     </div>
 
                     <div id="categoryButtons" class="category-row">
-                        <button class="category-btn hover-effect" data-id="all">
+                         <button class="category-btn hover-effect" data-id="all">
                             All
                         </button>
                         @foreach ($categories as $category)
