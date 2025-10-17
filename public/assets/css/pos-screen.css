@@ -227,23 +227,13 @@ body {
   display: none;
 }
 
-/* Category Icon Styles */
-.category-icon-wrapper{
-  width: 40px;
-  height: 40px;
-  margin: 0 auto 8px auto;
  
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px;
-}
 /* Category Icon Styles */
 .category-icon-wrapper img {
-  width: 45px;
-  height: 45px;
+  width: 113px;
+  height: 90px;
   object-fit: cover;
+  border-radius: 10px;
 }
 
 
@@ -255,12 +245,12 @@ body {
   font-weight: 600;
   text-align: center;
   line-height: 1.2;
-  margin-top: 4px;
+  margin-top: 9px;
 }
 
 /* Individual category buttons */
 .category-btn {
-  padding: 16px 12px;
+  
   border: 1px solid rgba(0, 0, 0, .1);
   border-radius: 12px;
   background: #fff;
