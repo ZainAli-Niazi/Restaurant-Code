@@ -69,9 +69,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     // Orders
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-    Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
     Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
-
+    Route::match(['put', 'patch'], '/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+    Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
 
     /*
 |--------------------------------------------------------------------------
@@ -79,7 +79,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 |--------------------------------------------------------------------------
 */
     Route::get('/pos', [POSController::class, 'index'])->name('pos.index');
+    Route::get('/pos/{order}/edit', [POSController::class, 'edit'])->name('pos.edit');
     Route::post('/pos/order/store', [POSController::class, 'storeOrder'])->name('pos.order.store');
+    Route::put('/pos/order/{order}/update', [POSController::class, 'updateOrder'])->name('pos.order.update');
     Route::get('/pos/held-orders', [POSController::class, 'getHeldOrders'])->name('pos.held-orders');
 
     // Fixed: use {id} not {$id}

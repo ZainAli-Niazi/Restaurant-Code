@@ -73,7 +73,6 @@ $(document).ready(function () {
 
 //   -----------------------------------------------------POS Screen------------------------------------------------------------------- 
 
-
 /* =========================
    POS Frontend — Optimized
    ========================= */
@@ -158,17 +157,18 @@ function addOrIncProduct(pid) {
 }
 
 function appendOrderRow(row) {
+  const rowTotal = row.price * row.qty * (1 - row.discPct / 100);
   const $tr = $(`
     <tr data-id="${row.id}">
       <td><div class="fw-semibold text-truncate">${row.name}</div></td>
       <td class="text-end price">${row.price}</td>
       <td class="text-center">
-        <input type="number" class="form-control form-control-sm qty" value="${row.qty}" min="1" style="width:40px;display:inline-block;">
+        <input type="number" class="form-control form-control-sm qty" value="${row.qty}" min="1" style="width:60px;display:inline-block;">
       </td>
       <td class="text-center">
-        <input type="number" class="form-control form-control-sm disc" value="${row.discPct}" min="0" max="100" style="width:40px;display:inline-block;">
+        <input type="number" class="form-control form-control-sm disc" value="${row.discPct}" min="0" max="100" style="width:60px;display:inline-block;">
       </td>
-      <td class="text-end row-total">${row.price * row.qty * (1 - row.discPct / 100)}</td>
+      <td class="text-end row-total">${rowTotal}</td>
       <td class="text-center">
         <button class="btn btn-sm btn-outline-danger remove btn-pill"><i class="bi bi-x-lg"></i></button>
       </td>
@@ -184,6 +184,47 @@ function updateRowTotals(pid) {
   $tr.find('.row-total').text(rowTotal);
   $tr.find('.qty').val(row.qty);
   $tr.find('.disc').val(row.discPct);
+}
+
+// ===== Load Existing Order =====
+function loadExistingOrder(orderData) {
+  if (!orderData) return;
+  
+  console.log('Loading existing order:', orderData); // Debug log
+  
+  // Clear current order
+  order.clear();
+  $('#orderTable tbody').empty();
+  
+  // Set table number
+  if (orderData.table_number) {
+    $('#tableSelect').val(orderData.table_number);
+  }
+  
+  // Set financial values
+  $('#serviceCharges').val(orderData.service_charges || 0);
+  $('#discountAmount').val(orderData.discount_amount || 0);
+  $('#paidAmount').val(orderData.paid_amount || 0);
+  
+  // Load order items
+  if (orderData.items && Array.isArray(orderData.items)) {
+    console.log('Loading items:', orderData.items); // Debug log
+    orderData.items.forEach(item => {
+      const row = {
+        id: Number(item.product_id),
+        name: item.name,
+        price: safeNum(item.price),
+        qty: Math.max(1, safeNum(item.quantity)),
+        discPct: Math.max(0, Math.min(100, safeNum(item.discount_percentage)))
+      };
+      console.log('Adding item to order:', row); // Debug log
+      order.set(row.id, row);
+      appendOrderRow(row);
+    });
+  }
+  
+  recalcTotals();
+  console.log('Final order state:', Array.from(order.values())); // Debug log
 }
 
 // ===== Totals =====
@@ -248,14 +289,15 @@ function openPrintView(url) {
   });
 }
 
-
-// Print Invoice (requires orderId)
 function printInvoice(orderId) {
   const url = `/pos/invoice/${orderId}`;
   openPrintView(url);
 }
 
-// 
+function printKOT(orderId) {
+  const url = `/pos/kot/${orderId}`;
+  openPrintView(url);
+}
 
 // ===== Save / Restore (localStorage) =====
 function persistOrder() {
@@ -296,14 +338,17 @@ function restoreOrder() {
   }
 })();
 
-// ===== Save Order (no reset on save) =====
+// ===== Save/Update Order =====
 function saveOrder(status) {
   if (order.size === 0) {
     showAlert('Please add items to the order', 'danger');
     return;
   }
 
+  const isEditMode = $('#isEditMode').val() === 'true';
+  const orderId = $('#currentOrderId').val();
   const orderStoreUrl = $('#orderStoreRoute').val();
+  
   const items = Array.from(order.values()).map(item => ({
     product_id: item.id,
     quantity: item.qty,
@@ -322,17 +367,26 @@ function saveOrder(status) {
     status: status
   };
 
+  const method = isEditMode ? 'PUT' : 'POST';
+
   $.ajax({
     url: orderStoreUrl,
-    method: 'POST',
+    method: method,
     contentType: 'application/json',
     data: JSON.stringify(payload),
     success: function (response) {
       if (response && response.success) {
         window.lastSavedOrderId = response.order_id; // store order id globally
-        showAlert('Order ' + (status === 'hold' ? 'held' : 'saved') + ' successfully!');
-        // ✅ No reset here, only persist
-        persistOrder();
+        showAlert('Order ' + (isEditMode ? 'updated' : (status === 'hold' ? 'held' : 'saved')) + ' successfully!');
+        
+        if (!isEditMode && status === 'completed') {
+          // For new completed orders, redirect to orders index
+          setTimeout(() => {
+            window.location.href = '/orders';
+          }, 1500);
+        } else {
+          persistOrder();
+        }
       } else {
         showAlert('Unexpected response from server.', 'danger');
       }
@@ -346,7 +400,7 @@ function saveOrder(status) {
         showAlert(errorMessage, 'danger');
       } else {
         const msg = xhr.responseJSON?.message || (xhr.status + ' ' + xhr.statusText) || 'Unknown error';
-        showAlert('Error saving order: ' + msg, 'danger');
+        showAlert('Error ' + (isEditMode ? 'updating' : 'saving') + ' order: ' + msg, 'danger');
       }
     }
   });
@@ -359,7 +413,7 @@ function resetOrderUI() {
   $('#serviceCharges').val(0);
   $('#discountAmount').val(0);
   $('#paidAmount').val(0);
-  $('#tableSelect').val('');
+  $('#tableSelect').val('T1');
   $('#searchInput').val('');
   recalcTotals();
   localStorage.removeItem(STORAGE_KEY);
@@ -422,7 +476,6 @@ $('#serviceCharges, #discountAmount, #paidAmount').on('input', function () {
 
 $('#btnReset').on('click', resetOrderUI);
 
-// Now these buttons use new print functions (require saved orderId)
 $('#btnPrint').on('click', function () {
   if (!window.lastSavedOrderId) {
     showAlert('Please save the order before printing invoice', 'danger');
@@ -443,19 +496,29 @@ $('#btnPaySave').on('click', function () { saveOrder('completed'); });
 $('#btnHold').on('click', function () { saveOrder('hold'); });
 
 // ===== Init =====
-(function init() {
+$(document).ready(function() {
   setActiveCategory('all');
-  restoreOrder();
+  
+  // Load existing order if in edit mode
+  const orderDataElement = document.getElementById('orderData');
+  if (orderDataElement && orderDataElement.value) {
+    try {
+      const orderData = JSON.parse(orderDataElement.value);
+      console.log('Parsed order data:', orderData); // Debug log
+      loadExistingOrder(orderData);
+    } catch (e) {
+      console.error('Error parsing order data:', e);
+    }
+  } else {
+    console.log('No existing order data found, restoring from localStorage');
+    restoreOrder();
+  }
+  
   recalcTotals();
-})();
-
-
-
-
+});
 
 // ===== Category Scroll Arrows =====
-
- $(function () {
+$(function () {
   const $row = $('#categoryButtons');
   const $prevBtn = $('#catPrev');
   const $nextBtn = $('#catNext');

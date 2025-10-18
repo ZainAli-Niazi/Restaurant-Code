@@ -20,6 +20,7 @@ class ReportController extends Controller
         $salesQuery = DB::table('orders')
             ->selectRaw('DATE(created_at) as date, COUNT(*) as orders, SUM(total_amount) as revenue')
             ->whereBetween('created_at', [$dateRange['from'], $dateRange['to']])
+            ->where('status', 'completed') // Only completed orders
             ->groupBy('date')
             ->orderBy('date');
 
@@ -39,6 +40,7 @@ class ReportController extends Controller
         $previousSales = DB::table('orders')
             ->selectRaw('COUNT(*) as orders, SUM(total_amount) as revenue')
             ->whereBetween('created_at', [$previousFrom, $previousTo])
+            ->where('status', 'completed') // Only completed orders
             ->first();
 
         $previousRevenue = $previousSales->revenue ?? 0;
@@ -47,18 +49,18 @@ class ReportController extends Controller
         // Change Percentages
         $revenueChangePercentage = $previousRevenue > 0
             ? round((($totalRevenue - $previousRevenue) / $previousRevenue) * 100, 1)
-            : 100;
+            : ($totalRevenue > 0 ? 100 : 0);
 
         $ordersChangePercentage = $previousOrders > 0
             ? round((($totalOrders - $previousOrders) / $previousOrders) * 100, 1)
-            : 100;
+            : ($totalOrders > 0 ? 100 : 0);
 
         $aovCurrent = $totalOrders > 0 ? $totalRevenue / $totalOrders : 0;
         $aovPrevious = $previousOrders > 0 ? $previousRevenue / $previousOrders : 0;
 
         $aovChangePercentage = $aovPrevious > 0
             ? round((($aovCurrent - $aovPrevious) / $aovPrevious) * 100, 1)
-            : 100;
+            : ($aovCurrent > 0 ? 100 : 0);
 
         // Best Day
         $bestDay = $salesData->sortByDesc('revenue')->first();
@@ -83,6 +85,7 @@ class ReportController extends Controller
             ->join('products', 'order_items.product_id', '=', 'products.id')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->whereBetween('orders.created_at', [$dateRange['from'], $dateRange['to']])
+            ->where('orders.status', 'completed') // Only completed orders
             ->selectRaw('products.name, SUM(order_items.quantity) as sold_quantity, SUM(order_items.total) as total_revenue')
             ->groupBy('products.name')
             ->orderByDesc('sold_quantity')
@@ -116,8 +119,9 @@ class ReportController extends Controller
     {
         $dateRange = $this->getDateRange($request);
 
-        // Calculate total revenue
+        // Calculate total revenue from COMPLETED orders only
         $revenue = Order::whereBetween('created_at', [$dateRange['from'], $dateRange['to']])
+            ->where('status', 'completed') // Only completed orders
             ->sum('total_amount');
 
         // Calculate total expenses

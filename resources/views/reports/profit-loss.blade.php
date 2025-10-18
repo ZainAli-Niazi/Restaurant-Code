@@ -9,6 +9,7 @@
         <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
                 <i class="fas fa-chart-line me-2 text-primary"></i> Profit & Loss Report
+                <small class="text-muted fs-6">(Completed Orders Only)</small>
             </h5>
             <a href="{{ route('reports.profit-loss') }}" class="btn btn-outline-secondary btn-sm">
                 <i class="fas fa-sync-alt"></i> Reset
@@ -16,6 +17,12 @@
         </div>
         
         <div class="card-body">
+            <!-- Info Alert -->
+            <div class="alert alert-info mb-4">
+                <i class="fas fa-info-circle me-2"></i>
+                Revenue calculations include <strong>completed orders only</strong>. Hold orders are excluded from profit calculations.
+            </div>
+
             <!-- Date Filter -->
             <form method="GET" action="{{ route('reports.profit-loss') }}" class="mb-4">
                 <div class="row g-3 align-items-end">
@@ -53,7 +60,7 @@
                         </div>
                         <div class="card-body text-center">
                             <h3 class="text-success fw-bold">Rs {{ number_format($revenue, 2) }}</h3>
-                            <small class="text-muted">Sales & Orders</small>
+                            <small class="text-muted">From Completed Orders</small>
                         </div>
                     </div>
                 </div>

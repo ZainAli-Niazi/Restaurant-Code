@@ -8,13 +8,38 @@
         <div id="alertContainer"></div>
 
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <input type="hidden" id="orderStoreRoute" value="{{ route('pos.order.store') }}">
+        <input type="hidden" id="orderStoreRoute" value="{{ isset($order) ? route('pos.order.update', $order->id) : route('pos.order.store') }}">
+        <input type="hidden" id="isEditMode" value="{{ isset($order) ? 'true' : 'false' }}">
+        <input type="hidden" id="currentOrderId" value="{{ $order->id ?? '' }}">
+
+        @if(isset($order))
+        <input type="hidden" id="orderData" value="{{ json_encode([
+            'order_number' => $order->order_number,
+            'table_number' => $order->table_number,
+            'status' => $order->status,
+            'sub_total' => $order->sub_total,
+            'service_charges' => $order->service_charges,
+            'discount_amount' => $order->discount_amount,
+            'total_amount' => $order->total_amount,
+            'paid_amount' => $order->paid_amount,
+            'items' => $order->orderItems->map(function($item) {
+                return [
+                    'product_id' => $item->product_id,
+                    'name' => $item->product->name,
+                    'price' => $item->price,
+                    'quantity' => $item->quantity,
+                    'discount_percentage' => $item->discount_percentage,
+                    'total' => $item->total
+                ];
+            })->toArray()
+        ]) }}">
+        @endif
 
         <div class="pos-flex col-12">
             <!-- ===== Left: Order List (40% width) ===== -->
             <div class="pos-left card-soft col-5">
                 <div class="order-header">
-                    <h6 class="mb-0">Order List</h6>
+                    <h6 class="mb-0">Order List {{ isset($order) ? '(Editing: ' . $order->order_number . ')' : '' }}</h6>
                     <div class="order-tools">
                         <select id="tableSelect" class="form-select form-select-sm">
                             <option value="T1">T1</option>
@@ -48,40 +73,31 @@
 
             <!-- ===== Right: Categories + Products ===== -->
             <div class="pos-right col-7">
-
-                <!-- Enhanced Categories Section -->
-                <div class="card-soft category-card">
+                <!-- Categories -->
+                <div class="card-soft p-3 category-card">
                     <div class="cat-arrows">
-                        <button type="button" class="cat-arrow" id="catPrev" title="Previous categories">
-                            <i class="fa-solid fa-chevron-left"></i>
+                        <button type="button" class="cat-arrow" id="catPrev">
+                            <i class="fa-solid fa-arrow-left"></i>
                         </button>
-                        <button type="button" class="cat-arrow" id="catNext" title="Next categories">
-                            <i class="fa-solid fa-chevron-right"></i>
+                        <button type="button" class="cat-arrow" id="catNext">
+                            <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
 
                     <div id="categoryButtons" class="category-row">
-                        <button class="category-btn hover-effect active" data-id="all">
-
-                            <span class="category-name">All Items</span>
+                         <button class="category-btn hover-effect" data-id="all">
+                            All
                         </button>
                         @foreach ($categories as $category)
                             <button class="category-btn hover-effect" data-id="{{ $category->id }}">
                                 <div class="category-icon-wrapper">
-                                    @if (isset($category->icon) && $category->icon && file_exists(public_path('category-icons/' . $category->icon)))
-                                        <img src="{{ asset('category-icons/' . $category->icon) }}"
-                                            alt="{{ $category->name }}" class="category-icon"
-                                            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                        <i class="bi bi-tag-fill category-icon" style="display: none;"></i>
-                                    @else
-                                        <i class="bi bi-tag-fill category-icon"></i>
-                                    @endif
+                                    <img src="{{ asset('category-icons/' . $category->icon) }}" alt="{{ $category->name }}"
+                                        class="category-icon">
                                 </div>
                                 <span class="category-name">{{ $category->name }}</span>
                             </button>
                         @endforeach
                     </div>
-
 
                 </div>
 
@@ -154,8 +170,9 @@
 
             <!-- Action Buttons -->
             <div class="row g-2 g-sm-3 action-buttons">
-                <div><button id="btnPaySave" class="btn btn-success w-100 btn-pill"><i
-                            class="bi bi-credit-card me-1"></i> Pay & Save</button></div>
+                <div><button id="btnPaySave" class="btn btn-success w-100 btn-pill">
+                    <i class="bi bi-credit-card me-1"></i> {{ isset($order) ? 'Update & Save' : 'Pay & Save' }}
+                </button></div>
                 <div><button id="btnHold" class="btn btn-primary w-100 btn-pill"><i
                             class="bi bi-pause-circle me-1"></i> Hold</button></div>
                 <div><button id="btnKOT" class="btn btn-secondary w-100 btn-pill"><i class="bi bi-receipt me-1"></i>
@@ -168,14 +185,4 @@
         </div>
     </div>
 @endsection
-
-@push('scripts')
-    <script>
-        window.restaurantInfo = {
-            name: "{{ $restaurantSettings['restaurant_name'] ?? 'Restaurant' }}",
-            address: "{{ $restaurantSettings['restaurant_address'] ?? '' }}",
-            phone: "{{ $restaurantSettings['restaurant_phone'] ?? '' }}",
-        };
-    </script>
-    <script src="{{ asset('assets/js/pos.js') }}"></script>
-@endpush
+ 

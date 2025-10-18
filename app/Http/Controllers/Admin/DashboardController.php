@@ -19,20 +19,23 @@ class DashboardController extends Controller
 
         // === Dashboard KPIs ===
         $todaySales = Order::whereDate('created_at', $today)
-            ->where('status', 'completed')
+            ->where('status', 'completed') // Only completed orders
             ->sum('total_amount');
 
-        $todayOrders = Order::whereDate('created_at', $today)->count();
+        $todayOrders = Order::whereDate('created_at', $today)
+            ->where('status', 'completed') // Only completed orders
+            ->count();
+
         $todayExpenses = Expense::whereDate('date', $today)->sum('amount');
 
         $currentShift = Shift::whereNull('end_time')->first();
         $shiftBalance = $currentShift ? ($currentShift->ending_cash ?? $currentShift->starting_cash) : 0;
 
-        // === Top Selling Products (Today) ===
+        // === Top Selling Products (Today) - Only from completed orders ===
         $topSellingItems = OrderItem::with('product')
             ->whereHas('order', function ($query) use ($today) {
                 $query->whereDate('created_at', $today)
-                    ->where('status', 'completed');
+                    ->where('status', 'completed'); // Only completed orders
             })
             ->select(
                 'product_id',
@@ -50,14 +53,14 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        // === Recent Orders ===
+        // === Recent Orders - Include all statuses for monitoring ===
         $recentOrders = Order::with('orderItems.product')
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();
 
-        // === Sales Chart Data (Last 30 Days) ===
-        $startDate = Carbon::now()->subDays(29)->startOfDay(); // ✅ Changed from 6 to 29
+        // === Sales Chart Data (Last 30 Days) - Only completed orders ===
+        $startDate = Carbon::now()->subDays(29)->startOfDay();
         $endDate = Carbon::now()->endOfDay();
 
         $salesData = Order::select(
@@ -65,7 +68,7 @@ class DashboardController extends Controller
                 DB::raw('SUM(total_amount) as total_sales')
             )
             ->whereBetween('created_at', [$startDate, $endDate])
-            ->where('status', 'completed')
+            ->where('status', 'completed') // Only completed orders
             ->groupBy(DB::raw('DATE(created_at)'))
             ->orderBy('date', 'ASC')
             ->get();
@@ -81,6 +84,11 @@ class DashboardController extends Controller
             $chartData[] = $daySales ? (float) $daySales->total_sales : 0;
         }
 
+        // === Additional Stats for Better Insights ===
+        $totalCompletedOrders = Order::where('status', 'completed')->count();
+        $totalHoldOrders = Order::where('status', 'hold')->count();
+        $totalPendingOrders = Order::where('status', 'pending')->count();
+
         return view('admin.dashboard', compact(
             'todaySales',
             'todayOrders',
@@ -90,7 +98,10 @@ class DashboardController extends Controller
             'lowStockItems',
             'recentOrders',
             'chartLabels',
-            'chartData'
+            'chartData',
+            'totalCompletedOrders',
+            'totalHoldOrders',
+            'totalPendingOrders'
         ));
     }
 }

@@ -22,6 +22,16 @@ class POSController extends Controller
         return view('pos.index', compact('categories'));
     }
 
+    public function edit($id)
+    {
+        $order = Order::with('orderItems.product')->findOrFail($id);
+        $categories = Category::with(['products' => function ($query) {
+            $query->where('status', true);
+        }])->where('status', true)->get();
+
+        return view('pos.edit', compact('order', 'categories'));
+    }
+
     public function storeOrder(Request $request)
     {
         $request->validate([
@@ -96,6 +106,72 @@ class POSController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error saving order: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function updateOrder(Request $request, $id)
+    {
+        $request->validate([
+            'table_number' => 'nullable|string',
+            'items' => 'required|array',
+            'items.*.product_id' => 'required|exists:products,id',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.price' => 'required|numeric|min:0',
+            'items.*.discount_percentage' => 'nullable|numeric|min:0|max:100',
+            'sub_total' => 'required|numeric|min:0',
+            'service_charges' => 'nullable|numeric|min:0',
+            'discount_amount' => 'nullable|numeric|min:0',
+            'total_amount' => 'required|numeric|min:0',
+            'paid_amount' => 'nullable|numeric|min:0',
+            'status' => 'required|in:pending,completed,hold'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $order = Order::findOrFail($id);
+
+            // Update order
+            $order->update([
+                'table_number' => $request->table_number,
+                'status' => $request->status,
+                'sub_total' => $request->sub_total,
+                'service_charges' => $request->service_charges ?? 0,
+                'discount_amount' => $request->discount_amount ?? 0,
+                'total_amount' => $request->total_amount,
+                'paid_amount' => $request->paid_amount ?? 0,
+                'balance_amount' => max(0, $request->total_amount - ($request->paid_amount ?? 0)),
+                'return_amount' => max(0, ($request->paid_amount ?? 0) - $request->total_amount)
+            ]);
+
+            // Delete existing order items
+            $order->orderItems()->delete();
+
+            // Create new order items
+            foreach ($request->items as $item) {
+                $orderItem = OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item['product_id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'discount_percentage' => $item['discount_percentage'] ?? 0,
+                    'total' => $item['quantity'] * $item['price'] * (1 - ($item['discount_percentage'] ?? 0) / 100)
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Order updated successfully',
+                'order_id' => $order->id
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating order: ' . $e->getMessage()
             ], 500);
         }
     }

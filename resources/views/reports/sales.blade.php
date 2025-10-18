@@ -10,6 +10,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">
                     <i class="fas fa-chart-line me-2"></i>Sales Performance
+                    <small class="text-muted fs-6">(Completed Orders Only)</small>
                 </h5>
                 <div>
                     <button class="btn btn-sm btn-outline-secondary" id="printReport">
@@ -53,16 +54,23 @@
 
         <!-- Summary Cards -->
         <div class="card-body">
+            <div class="alert alert-info mb-4">
+                <i class="fas fa-info-circle me-2"></i>
+                This report shows data from <strong>completed orders only</strong>. Hold orders are excluded from calculations.
+            </div>
+
             <div class="row mb-4">
                 <div class="col-md-3 mb-3">
                     <div class="card border-primary">
                         <div class="card-body">
                             <h6 class="card-subtitle mb-2 text-muted">Total Revenue</h6>
                             <h3 class="card-title text-primary">Rs {{ number_format($totalRevenue, 2) }}</h3>
-                            <div class="text-success small">
-                                <i class="fas fa-arrow-up"></i> 
-                                {{ $revenueChangePercentage }}% from previous period
+                            @if($revenueChangePercentage != 0)
+                            <div class="text-{{ $revenueChangePercentage >= 0 ? 'success' : 'danger' }} small">
+                                <i class="fas fa-arrow-{{ $revenueChangePercentage >= 0 ? 'up' : 'down' }}"></i> 
+                                {{ abs($revenueChangePercentage) }}% from previous period
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -71,10 +79,12 @@
                         <div class="card-body">
                             <h6 class="card-subtitle mb-2 text-muted">Total Orders</h6>
                             <h3 class="card-title text-success">{{ $totalOrders }}</h3>
-                            <div class="text-success small">
-                                <i class="fas fa-arrow-up"></i> 
-                                {{ $ordersChangePercentage }}% from previous period
+                            @if($ordersChangePercentage != 0)
+                            <div class="text-{{ $ordersChangePercentage >= 0 ? 'success' : 'danger' }} small">
+                                <i class="fas fa-arrow-{{ $ordersChangePercentage >= 0 ? 'up' : 'down' }}"></i> 
+                                {{ abs($ordersChangePercentage) }}% from previous period
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -83,10 +93,12 @@
                         <div class="card-body">
                             <h6 class="card-subtitle mb-2 text-muted">Avg. Order Value</h6>
                             <h3 class="card-title text-info">Rs {{ number_format($totalRevenue / max($totalOrders, 1), 2) }}</h3>
-                            <div class="text-success small">
-                                <i class="fas fa-arrow-up"></i> 
-                                {{ $aovChangePercentage }}% from previous period
+                            @if($aovChangePercentage != 0)
+                            <div class="text-{{ $aovChangePercentage >= 0 ? 'success' : 'danger' }} small">
+                                <i class="fas fa-arrow-{{ $aovChangePercentage >= 0 ? 'up' : 'down' }}"></i> 
+                                {{ abs($aovChangePercentage) }}% from previous period
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -103,7 +115,7 @@
                                 </div>
                             @else
                                 <h3 class="card-title text-warning">N/A</h3>
-                                <div class="text-muted small">No data available</div>
+                                <div class="text-muted small">No completed orders</div>
                             @endif
                         </div>
                     </div>
@@ -111,6 +123,7 @@
             </div>
 
             <!-- Chart Section -->
+            @if($totalOrders > 0)
             <div class="row mb-4">
                 <div class="col-md-12">
                     <div class="card">
@@ -120,6 +133,7 @@
                     </div>
                 </div>
             </div>
+            @endif
 
             <!-- Data Table -->
             <div class="card">
@@ -136,7 +150,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($salesData as $data)
+                                @forelse($salesData as $data)
                                 <tr>
                                     <td class="text-nowrap">
                                         {{ $data->date->format('D, M j, Y') }}
@@ -146,8 +160,16 @@
                                     <td class="text-end">Rs {{ number_format($data->revenue / max($data->orders, 1), 2) }}</td>
                                     <td class="text-end">{{ number_format(($data->revenue / max($totalRevenue, 1)) * 100, 1) }}%</td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        No completed orders found for the selected period.
+                                    </td>
+                                </tr>
+                                @endforelse
                             </tbody>
+                            @if($salesData->isNotEmpty())
                             <tfoot class="table-light">
                                 <tr>
                                     <th>Total</th>
@@ -157,6 +179,7 @@
                                     <th class="text-end">100%</th>
                                 </tr>
                             </tfoot>
+                            @endif
                         </table>
                     </div>
                 </div>
@@ -171,6 +194,7 @@
 {{-- XLSX Script for Excel Export --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
+@if($totalOrders > 0)
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('salesChart').getContext('2d');
@@ -293,3 +317,4 @@
         }
     });
 </script>
+@endif

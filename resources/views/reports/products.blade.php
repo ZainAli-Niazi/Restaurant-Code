@@ -9,10 +9,17 @@
         <div class="card-header bg-white py-3 border-bottom">
             <h5 class="mb-0">
                 <i class="fas fa-chart-line me-2"></i>Product Sales Report
+                <small class="text-muted fs-6">(Completed Orders Only)</small>
             </h5>
         </div>
         
         <div class="card-body">
+            <!-- Info Alert -->
+            <div class="alert alert-info mb-4">
+                <i class="fas fa-info-circle me-2"></i>
+                This report shows product sales from <strong>completed orders only</strong>. Hold orders are excluded.
+            </div>
+
             <!-- Filters Section -->
             <form method="GET" action="{{ route('reports.products') }}" class="mb-4">
                 <div class="row g-3 align-items-end">
@@ -67,7 +74,7 @@
                         <tr>
                             <td colspan="3" class="text-center text-muted py-4">
                                 <i class="fas fa-info-circle me-1"></i> 
-                                No sales data found for the selected period.
+                                No sales data found for completed orders in the selected period.
                             </td>
                         </tr>
                         @endforelse
