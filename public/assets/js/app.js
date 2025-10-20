@@ -1,74 +1,110 @@
-
 //----------------------------------------------------------- Sidebar  --------------------------------------------------------------
 
-$(document).ready(function () {
-  const $sidebar = $('#sidebar');
-  const $toggleBtn = $('#toggleSidebar');
-  const $toggleIcon = $toggleBtn.find('i');
+document.addEventListener('DOMContentLoaded', function () {
+  const sidebar = document.getElementById('sidebar');
+  const toggleBtn = document.getElementById('toggleSidebar');
+  const toggleIcon = toggleBtn.querySelector('i');
 
   // Initialize Bootstrap tooltips on hover
-  $('[data-bs-toggle="tooltip"]').tooltip({
-    trigger: 'hover'
+  const tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+  tooltipElements.forEach(element => {
+    new bootstrap.Tooltip(element, {
+      trigger: 'hover'
+    });
   });
 
   // Sidebar toggle button click
-  $toggleBtn.on('click', function () {
-    $sidebar.toggleClass('expanded');
+  toggleBtn.addEventListener('click', function () {
+    sidebar.classList.toggle('expanded');
 
-    if ($sidebar.hasClass('expanded')) {
-      $toggleIcon.removeClass('bi-layout-sidebar-inset').addClass('bi-x-lg');
-      $('[data-bs-toggle="tooltip"]').tooltip('disable');
+    if (sidebar.classList.contains('expanded')) {
+      toggleIcon.classList.remove('bi-layout-sidebar-inset');
+      toggleIcon.classList.add('bi-x-lg');
+      tooltipElements.forEach(element => {
+        const tooltip = bootstrap.Tooltip.getInstance(element);
+        if (tooltip) tooltip.disable();
+      });
     } else {
-      $toggleIcon.removeClass('bi-x-lg').addClass('bi-layout-sidebar-inset');
-      $('[data-bs-toggle="tooltip"]').tooltip('enable');
+      toggleIcon.classList.remove('bi-x-lg');
+      toggleIcon.classList.add('bi-layout-sidebar-inset');
+      tooltipElements.forEach(element => {
+        const tooltip = bootstrap.Tooltip.getInstance(element);
+        if (tooltip) tooltip.enable();
+      });
 
       // Close all submenus when collapsed
-      $('.submenu').removeClass('show');
-      $('.dropdown-icon').removeClass('rotate');
+      document.querySelectorAll('.submenu').forEach(submenu => {
+        submenu.classList.remove('show');
+      });
+      document.querySelectorAll('.dropdown-icon').forEach(icon => {
+        icon.classList.remove('rotate');
+      });
     }
   });
 
   // Submenu toggle click
-  $('.submenu-toggle').on('click', function (e) {
-    if (!$sidebar.hasClass('expanded')) {
-      // Show tooltip if sidebar is collapsed
-      $(this).tooltip('show');
-      setTimeout(() => {
-        $(this).tooltip('hide');
-      }, 1000);
-      return;
-    }
+  document.querySelectorAll('.submenu-toggle').forEach(toggle => {
+    toggle.addEventListener('click', function (e) {
+      if (!sidebar.classList.contains('expanded')) {
+        // Show tooltip if sidebar is collapsed
+        const tooltip = bootstrap.Tooltip.getInstance(this);
+        if (tooltip) {
+          tooltip.show();
+          setTimeout(() => {
+            tooltip.hide();
+          }, 1000);
+        }
+        return;
+      }
 
-    e.preventDefault();
-    const $submenu = $(this).next('.submenu');
-    const $icon = $(this).find('.dropdown-icon');
+      e.preventDefault();
+      const submenu = this.nextElementSibling;
+      const icon = this.querySelector('.dropdown-icon');
 
-    // Close all other submenus
-    $('.submenu').not($submenu).removeClass('show');
-    $('.dropdown-icon').not($icon).removeClass('rotate');
+      // Close all other submenus
+      document.querySelectorAll('.submenu').forEach(otherSubmenu => {
+        if (otherSubmenu !== submenu) {
+          otherSubmenu.classList.remove('show');
+        }
+      });
+      document.querySelectorAll('.dropdown-icon').forEach(otherIcon => {
+        if (otherIcon !== icon) {
+          otherIcon.classList.remove('rotate');
+        }
+      });
 
-    // Toggle selected submenu
-    $submenu.toggleClass('show');
-    $icon.toggleClass('rotate');
+      // Toggle selected submenu
+      submenu.classList.toggle('show');
+      icon.classList.toggle('rotate');
+    });
   });
 
   // Close submenu when clicking outside
-  $(document).on('click', function (e) {
-    if (!$(e.target).closest('.submenu-toggle').length && !$(e.target).closest('.submenu').length) {
-      $('.submenu').removeClass('show');
-      $('.dropdown-icon').removeClass('rotate');
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.submenu-toggle') && !e.target.closest('.submenu')) {
+      document.querySelectorAll('.submenu').forEach(submenu => {
+        submenu.classList.remove('show');
+      });
+      document.querySelectorAll('.dropdown-icon').forEach(icon => {
+        icon.classList.remove('rotate');
+      });
     }
   });
 
   // Highlight active sidebar item based on current URL
   const currentUrl = window.location.href;
-  $('.sidebar-item').each(function () {
-    const href = $(this).attr('href');
+  document.querySelectorAll('.sidebar-item').forEach(item => {
+    const href = item.getAttribute('href');
     if (href && currentUrl.includes(href)) {
-      $(this).addClass('active');
+      item.classList.add('active');
     }
   });
 });
+
+
+
+
+
 
 
 //   -----------------------------------------------------POS Screen------------------------------------------------------------------- 
@@ -380,11 +416,7 @@ function saveOrder(status) {
         showAlert('Order ' + (isEditMode ? 'updated' : (status === 'hold' ? 'held' : 'saved')) + ' successfully!');
         
         if (!isEditMode && status === 'completed') {
-          // For new completed orders, redirect to orders index
-          setTimeout(() => {
-            window.location.href = '/orders';
-          }, 1500);
-        } else {
+         
           persistOrder();
         }
       } else {
