@@ -54,10 +54,7 @@
 
         <!-- Summary Cards -->
         <div class="card-body">
-            <div class="alert alert-info mb-4">
-                <i class="fas fa-info-circle me-2"></i>
-                This report shows data from <strong>completed orders only</strong>. Hold orders are excluded from calculations.
-            </div>
+         
 
             <div class="row mb-4">
                 <div class="col-md-3 mb-3">
