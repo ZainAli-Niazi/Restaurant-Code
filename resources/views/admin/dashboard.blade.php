@@ -3,7 +3,7 @@
 @section('title', 'Admin Dashboard')
 
 @section('content')
-<div class="container-fluid px-0">
+<div class="pos-container  py-2">
 
     {{-- Dashboard Stats --}}
     <div class="row">

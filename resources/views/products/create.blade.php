@@ -4,7 +4,7 @@
 @section('header', $restaurantSettings['restaurant_name'] ?? 'Restaurant')
 
 @section('content')
-<div class="container-fluid px-0">
+<div class="container-fluid py-2">
     <div class="card shadow mb-4">
         <div class="card-header py-3 d-flex justify-content-between align-items-center">
             <h6 class="m-0 font-weight-bold text-primary">Product Information</h6>

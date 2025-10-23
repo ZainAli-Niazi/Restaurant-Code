@@ -4,7 +4,7 @@
 @section('header', $restaurantSettings['restaurant_name'] ?? 'Restaurant')
 
 @section('content')
-    <div class="pos-container">
+    <div class="pos-container   py-2">
         <div id="alertContainer"></div>
 
         <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -21,6 +21,10 @@
                             <option value="T2">T2</option>
                             <option value="T3">T3</option>
                             <option value="T4">T4</option>
+                            <option value="T5">T5</option>
+                            <option value="T6">T6</option>
+                            <option value="T7">T7</option>
+                            <option value="T8">T8</option>
                         </select>
                         <input type="text" id="searchInput" class="form-control form-control-sm"
                             placeholder="Search products…">
@@ -168,14 +172,3 @@
         </div>
     </div>
 @endsection
-
-@push('scripts')
-    <script>
-        window.restaurantInfo = {
-            name: "{{ $restaurantSettings['restaurant_name'] ?? 'Restaurant' }}",
-            address: "{{ $restaurantSettings['restaurant_address'] ?? '' }}",
-            phone: "{{ $restaurantSettings['restaurant_phone'] ?? '' }}",
-        };
-    </script>
-    <script src="{{ asset('assets/js/pos.js') }}"></script>
-@endpush

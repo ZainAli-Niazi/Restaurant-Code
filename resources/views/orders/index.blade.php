@@ -4,13 +4,13 @@
 @section('header', $restaurantSettings['restaurant_name'] ?? 'Restaurant')
 
 @section('content')
-    <div class="container-fluid">
+    <div class="container-fluid py-2">
 
         <!-- Page Header -->
         <div class="row mb-4 align-items-center">
             <div class="col-md-6">
                 <h2 class="fw-bold text-dark">
-                    <i class="bi bi-card-checklist me-2"></i> Order Management
+                     Order Management
                 </h2>
 
             </div>
