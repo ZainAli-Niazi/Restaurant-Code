@@ -1,106 +1,40 @@
-//----------------------------------------------------------- Sidebar  --------------------------------------------------------------
+   // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('.main-header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
 
-document.addEventListener('DOMContentLoaded', function () {
-  const sidebar = document.getElementById('sidebar');
-  const toggleBtn = document.getElementById('toggleSidebar');
-  const toggleIcon = toggleBtn.querySelector('i');
-
-  // Initialize Bootstrap tooltips on hover
-  const tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-  tooltipElements.forEach(element => {
-    new bootstrap.Tooltip(element, {
-      trigger: 'hover'
-    });
-  });
-
-  // Sidebar toggle button click
-  toggleBtn.addEventListener('click', function () {
-    sidebar.classList.toggle('expanded');
-
-    if (sidebar.classList.contains('expanded')) {
-      toggleIcon.classList.remove('bi-layout-sidebar-inset');
-      toggleIcon.classList.add('bi-x-lg');
-      tooltipElements.forEach(element => {
-        const tooltip = bootstrap.Tooltip.getInstance(element);
-        if (tooltip) tooltip.disable();
-      });
-    } else {
-      toggleIcon.classList.remove('bi-x-lg');
-      toggleIcon.classList.add('bi-layout-sidebar-inset');
-      tooltipElements.forEach(element => {
-        const tooltip = bootstrap.Tooltip.getInstance(element);
-        if (tooltip) tooltip.enable();
-      });
-
-      // Close all submenus when collapsed
-      document.querySelectorAll('.submenu').forEach(submenu => {
-        submenu.classList.remove('show');
-      });
-      document.querySelectorAll('.dropdown-icon').forEach(icon => {
-        icon.classList.remove('rotate');
-      });
-    }
-  });
-
-  // Submenu toggle click
-  document.querySelectorAll('.submenu-toggle').forEach(toggle => {
-    toggle.addEventListener('click', function (e) {
-      if (!sidebar.classList.contains('expanded')) {
-        // Show tooltip if sidebar is collapsed
-        const tooltip = bootstrap.Tooltip.getInstance(this);
-        if (tooltip) {
-          tooltip.show();
-          setTimeout(() => {
-            tooltip.hide();
-          }, 1000);
-        }
-        return;
-      }
-
-      e.preventDefault();
-      const submenu = this.nextElementSibling;
-      const icon = this.querySelector('.dropdown-icon');
-
-      // Close all other submenus
-      document.querySelectorAll('.submenu').forEach(otherSubmenu => {
-        if (otherSubmenu !== submenu) {
-          otherSubmenu.classList.remove('show');
-        }
-      });
-      document.querySelectorAll('.dropdown-icon').forEach(otherIcon => {
-        if (otherIcon !== icon) {
-          otherIcon.classList.remove('rotate');
-        }
-      });
-
-      // Toggle selected submenu
-      submenu.classList.toggle('show');
-      icon.classList.toggle('rotate');
-    });
-  });
-
-  // Close submenu when clicking outside
-  document.addEventListener('click', function (e) {
-    if (!e.target.closest('.submenu-toggle') && !e.target.closest('.submenu')) {
-      document.querySelectorAll('.submenu').forEach(submenu => {
-        submenu.classList.remove('show');
-      });
-      document.querySelectorAll('.dropdown-icon').forEach(icon => {
-        icon.classList.remove('rotate');
-      });
-    }
-  });
-
-  // Highlight active sidebar item based on current URL
-  const currentUrl = window.location.href;
-  document.querySelectorAll('.sidebar-item').forEach(item => {
-    const href = item.getAttribute('href');
-    if (href && currentUrl.includes(href)) {
-      item.classList.add('active');
-    }
-  });
-});
-
+        // Enhanced dropdown animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdowns = document.querySelectorAll('.dropdown');
+            
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('show.bs.dropdown', function() {
+                    this.classList.add('show');
+                });
+                
+                dropdown.addEventListener('hide.bs.dropdown', function() {
+                    this.classList.remove('show');
+                });
+            });
+            
+            // Submenu hover effect
+            const submenuItems = document.querySelectorAll('.dropdown-submenu');
+            
+            submenuItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.classList.add('show');
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.classList.remove('show');
+                });
+            });
+        });
 
 
 
@@ -215,7 +149,7 @@ function appendOrderRow(row) {
 function updateRowTotals(pid) {
   const row = order.get(pid);
   if (!row) return;
-  const rowTotal = Math.max(0, row.price * row.qty * (1 - (row.discPct / 100)));
+  const rowTotal = Math.max(0, (row.price - row.discPct) * row.qty);
   const $tr = $(`#orderTable tbody tr[data-id="${pid}"]`);
   $tr.find('.row-total').text(rowTotal);
   $tr.find('.qty').val(row.qty);
@@ -549,6 +483,9 @@ $(document).ready(function() {
   recalcTotals();
 });
 
+
+
+
 // ===== Category Scroll Arrows =====
 $(function () {
   const $row = $('#categoryButtons');
@@ -560,7 +497,7 @@ $(function () {
   function checkArrowVisibility() {
     const categoryCount = $row.children('.category-btn').length;
     
-    if (categoryCount > 5) {
+    if (categoryCount > 9) {
       $prevBtn.addClass('show');
       $nextBtn.addClass('show');
     } else {

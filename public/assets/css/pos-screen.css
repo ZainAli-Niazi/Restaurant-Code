@@ -1,7 +1,7 @@
 /* ====== Global Body ====== */
 body {
   background: #f5f7fb;
-  padding: 20px;
+  padding:  5px 15px 20px 15px ;
   padding-bottom: 180px;
   /* Space for the fixed bottom bar */
 }
@@ -69,7 +69,7 @@ body {
 .sticky-bottom-bar {
   position: fixed;
   bottom: 0;
-  left: 70px;
+  left: 0px;
   /* sidebar width */
   right: 0;
   z-index: 100;
@@ -119,7 +119,7 @@ body {
 
 /* Product Card Content */
 .product-content {
-  padding: 15px 10px;
+  padding: 10px;
   text-align: center;
 }
 
@@ -196,14 +196,6 @@ body {
 }
  
 
-.category-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid #f1f5f9;
-}
  
  
 /* Enhanced Category Row */
@@ -236,26 +228,7 @@ body {
   background: #94a3b8;
 }
 
-/* Enhanced Category Buttons - Full Width Images */
-.category-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 8px 8px;
-  border: 2px solid #e2e8f0;
-  border-radius: 16px;
-  background: #ffffff;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  min-width: 100px;
-  text-decoration: none;
-  color: #475569;
-  position: relative;
-  overflow: hidden;
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  margin: 0;
-}
-
+ 
  
 
 /* HOVER STATE - More subtle */
@@ -307,9 +280,9 @@ body {
 } */
 
 /* Enhanced Category Icons - Full Width */
-.category-icon {
-width: 100%;
-  height: 100%;
+.category-icon-wrapper img {
+    width: 38px;
+    height: 38px;
   object-fit: cover;
   transition: all 0.3s ease;
  
@@ -319,7 +292,7 @@ width: 100%;
  
 /* Fallback for missing icons - Full Width */
 .category-icon-wrapper i.category-icon {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #64748b;
   width: auto;
   height: auto;
@@ -445,13 +418,6 @@ width: 100%;
   display: none;
 }
 
-/* Category Icon Styles */
-.category-icon-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 10px;
-}
 
 .category-name {
   font-size: 12px;
@@ -473,8 +439,8 @@ width: 100%;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100px;
-  flex: 0 0 calc(20% - 8px);
+   height: 87px;
+  flex: 0 0 calc(12% - 6px);
   min-width: 0;
 }
 
@@ -494,17 +460,10 @@ width: 100%;
   background: #0d6efd20;
 }
 
-/* Category Row - Fixed 5 items per row */
-.category-row {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  gap: 10px;
-  scroll-behavior: smooth;
-}
+ 
 
 .category-row .category-btn {
-  flex: 0 0 calc(20% - 8px);
+  flex: 0 0 calc(12% - 8px);
   min-width: 0;
 }
 
@@ -524,6 +483,7 @@ width: 100%;
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 36%;
   padding: 16px;
   margin: 0;
 }
@@ -553,8 +513,8 @@ width: 100%;
 /* Product grid on right side */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
   padding: 0;
   margin: 0;
 }

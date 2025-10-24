@@ -19,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Redirect configurations
         $middleware->redirectTo(
             guests: '/admin/login',
-            users: '/admin/pos'
+            users: '/pos'
         );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
