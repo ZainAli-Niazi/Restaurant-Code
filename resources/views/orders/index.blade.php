@@ -167,7 +167,7 @@
                                     <td>
                                         <div class="d-flex justify-content-center gap-2">
 
-                                            <!-- Quick Actions Dropdown -->
+                                          
                                             <a  
                                                 href="{{ route('pos.kot', $order->id) }}" class="btn-action kot-btn">
                                                 <i class="bi bi-printer me-2"></i> 
