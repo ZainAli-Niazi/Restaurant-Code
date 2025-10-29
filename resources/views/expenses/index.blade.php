@@ -68,9 +68,7 @@
                                         <h6 class="mb-0 text-muted">Total Expenses</h6>
                                         <h4 class="mb-0 text-danger">₨{{ number_format($expenses->sum('amount'), 2) }}</h4>
                                     </div>
-                                    <div class="bg-danger bg-opacity-10 p-3 rounded">
-                                        <i class="fas fa-money-bill-wave text-danger"></i>
-                                    </div>
+                                     
                                 </div>
                             </div>
                         </div>
@@ -83,9 +81,7 @@
                                         <h6 class="mb-0 text-muted">Records Found</h6>
                                         <h4 class="mb-0">{{ $expenses->total() }}</h4>
                                     </div>
-                                    <div class="bg-primary bg-opacity-10 p-3 rounded">
-                                        <i class="fas fa-list text-primary"></i>
-                                    </div>
+                                     
                                 </div>
                             </div>
                         </div>
@@ -98,9 +94,7 @@
                                         <h6 class="mb-0 text-muted">Average Daily</h6>
                                         <h4 class="mb-0">Rs{{ number_format($averageDaily, 2) }}</h4>
                                     </div>
-                                    <div class="bg-success bg-opacity-10 p-3 rounded">
-                                        <i class="fas fa-chart-line text-success"></i>
-                                    </div>
+                                     
                                 </div>
                             </div>
                         </div>
