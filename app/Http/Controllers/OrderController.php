@@ -8,15 +8,14 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     /**
-     * Display a listing of the orders with filters and pagination.
+     * Display a listing of completed orders with filters and pagination.
      */
     public function index(Request $request)
     {
         $orders = Order::with('orderItems.product')
+            ->where('status', 'completed') // ✅ Only show completed orders
             ->when($request->from_date, fn($q) => $q->whereDate('created_at', '>=', $request->from_date))
             ->when($request->to_date, fn($q) => $q->whereDate('created_at', '<=', $request->to_date))
-            ->when($request->order_type, fn($q) => $q->where('order_type', $request->order_type))
-            ->when($request->status, fn($q) => $q->where('status', $request->status))
             ->orderBy('created_at', 'desc')
             ->paginate(10)
             ->withQueryString();
@@ -67,35 +66,12 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
-        // Delete related order items
         $order->orderItems()->delete();
-
-        // Delete related stock logs
         $order->stockLogs()->delete();
-
-        // Now delete the order
         $order->delete();
 
         return redirect()->route('orders.index')->with('success', 'Order deleted successfully.');
     }
 
-    /**
-     * Print Invoice view.
-     */
-    public function printInvoice($id)
-    {
-        $order = Order::with('orderItems.product')->findOrFail($id);
-
-        return view('orders.invoice', compact('order'));
-    }
-
-    /**
-     * Print Kitchen Order Ticket (KOT).
-     */
-    public function printKot($id)
-    {
-        $order = Order::with('orderItems.product')->findOrFail($id);
-
-        return view('orders.kot', compact('order'));
-    }
+    
 }

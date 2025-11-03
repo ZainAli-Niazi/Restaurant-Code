@@ -50,19 +50,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="card stat-card bg-info text-white shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="card-title mb-1">On Hold</h6>
-                                <h3 class="mb-0 fw-bold">{{ $orders->where('status', 'hold')->count() }}</h3>
-                            </div>
-                            <i class="bi bi-pause-circle display-6 opacity-75"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+             
         </div>
 
         <!-- Orders Card -->

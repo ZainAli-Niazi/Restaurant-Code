@@ -119,19 +119,7 @@
                 </div>
             </div>
 
-            <!-- Chart Section -->
-            @if($totalOrders > 0)
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <canvas id="salesChart" height="300"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endif
-
+           
             <!-- Data Table -->
             <div class="card">
                 <div class="card-body p-0">
