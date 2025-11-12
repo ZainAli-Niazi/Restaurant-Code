@@ -17,15 +17,15 @@ use App\Http\Controllers\{
     TableController
 };
 
-// 🔐 Guest Routes - Login & Register (with /admin prefix)
-Route::prefix('admin')->middleware('guest')->group(function () {
+//  Guest Routes - Login & Register (with /admin prefix)
+    Route::prefix('admin')->middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'index'])->name('admin.login');
     Route::get('/register', [RegisterController::class, 'register'])->name('admin.register');
     Route::post('/process-register', [RegisterController::class, 'store'])->name('admin.store');
     Route::post('/authenticate', [LoginController::class, 'authenticate'])->name('admin.authenticate');
 });
 
-// 🧑 Admin Authenticated Routes (with /admin prefix)
+//  Admin Authenticated Routes (with /admin prefix)
 Route::prefix('admin')->middleware(['auth', 'admin'])->group(function () {
     Route::get('/logout', [LoginController::class, 'logout'])->name('admin.logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
