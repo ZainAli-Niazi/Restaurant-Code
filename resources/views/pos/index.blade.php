@@ -35,12 +35,12 @@
                     <table class="table align-middle mb-0" id="orderTable">
                         <thead>
                             <tr>
-                                <th style="width:26%">Item</th>
-                                <th style="width:16%" class="text-end">Price</th>
-                                <th style="width:10%" class="text-center">Qty</th>
-                                <th style="width:26%" class="text-center">Discount</th>
-                                <th style="width:20%" class="text-end">Total</th>
-                                <th style="width:10%" class="text-center">Action</th>
+                                <th scope="col" style="width:22%">Item</th>
+                                <th scope="col" style="width:16%" class="text-end">Price</th>
+                                <th scope="col" style="width:10%" class="text-center">Qty</th>
+                                <th scope="col" style="width:13%" class="text-center d-none d-md-table-cell">Discount</th>
+                                <th scope="col" style="width:10%" class="text-end">Total</th>
+                                <th scope="col" style="width:13%" class="text-center d-none d-sm-table-cell">Action</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -244,18 +244,7 @@ $(document).ready(function() {
         // Update the dropdown display
         updateHeldOrdersTable();
 
-        // Reset form after holding
-        $("#orderTable tbody").empty();
-        $("#totalItems").text("0");
-        $("#subTotal").text("₨ 0");
-        $("#discountAmount").val("0");
-        $("#serviceCharges").val("0");
-        $("#totalAmount").text("₨ 0");
-        $("#paidAmount").val("0");
-        $("#balanceAmount").text("₨ 0");
-        $("#returnAmount").text("₨ 0");
-
-        alert("Order has been held successfully!");
+      
     });
 
     // 🟡 View button click
@@ -295,7 +284,7 @@ $(document).ready(function() {
         $("#totalItems").text(order.items.length);
 
         $(".dropdown-menu").removeClass("show");
-        alert("Held order loaded successfully!");
+        
     });
 
     // 🔴 Delete button click

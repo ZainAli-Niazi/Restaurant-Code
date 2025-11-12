@@ -41,6 +41,14 @@
 
 
 
+
+
+
+
+
+
+
+
 //   -----------------------------------------------------POS Screen------------------------------------------------------------------- 
 
 /* =========================
@@ -77,7 +85,7 @@ function showAlert(message, type = 'success') {
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>`;
   $('#alertContainer').append(alertHtml);
-  setTimeout(() => { $('#' + alertId).alert('close'); }, 3000);
+  setTimeout(() => { $('#' + alertId).alert('close'); }, 2000);
 }
 
 // ===== Category + Filtering =====
@@ -130,17 +138,17 @@ function appendOrderRow(row) {
   const rowTotal = row.price * row.qty * (1 - row.discPct / 100);
   const $tr = $(`
     <tr data-id="${row.id}">
-      <td><div class="fw-semibold text-truncate">${row.name}</div></td>
-      <td class="text-end price">${row.price}</td>
-      <td class="text-center">
-        <input type="number" class="form-control form-control-sm qty" value="${row.qty}" min="1" style="width:60px;display:inline-block;">
+      <td style="width: 24%;"><div class="fw-semibold text-truncate" style="font-size: 14px;">${row.name}</div></td>
+      <td class="text-end price" style="width: 14%; font-size: 14px;">${row.price}</td>
+      <td class="text-center" style="width: 8%;">
+      <input type="number" class="form-control form-control-sm qty" value="${row.qty}" min="1" style="width:48px;display:inline-block;font-size:13px;padding:2px 6px;">
       </td>
-      <td class="text-center">
-        <input type="number" class="form-control form-control-sm disc" value="${row.discPct}" min="0" max="100" style="width:60px;display:inline-block;">
+      <td class="text-center" style="width: 8%;">
+      <input type="number" class="form-control form-control-sm disc" value="${row.discPct}" min="0" max="100" style="width:48px;display:inline-block;font-size:13px;padding:2px 6px;">
       </td>
-      <td class="text-end row-total">${rowTotal}</td>
-      <td class="text-center">
-        <button class="btn btn-sm btn-outline-danger remove btn-pill"><i class="bi bi-x-lg"></i></button>
+      <td class="text-center row-total" style="width: 14%; font-size: 14px;">${rowTotal}</td>
+      <td class="text-center" style="width: 13%;">
+      <button class="btn btn-sm btn-outline-danger remove btn-pill"><i class="bi bi-x-lg"></i></button>
       </td>
     </tr>`);
   $('#orderTable tbody').append($tr);
@@ -269,6 +277,19 @@ function printKOT(orderId) {
   openPrintView(url);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ===== Save / Restore (localStorage) =====
 function persistOrder() {
   try {
@@ -371,6 +392,11 @@ function saveOrder(status) {
     }
   });
 }
+
+
+
+
+
 
 // ===== Reset UI =====
 function resetOrderUI() {
@@ -482,6 +508,14 @@ $(document).ready(function() {
   
   recalcTotals();
 });
+
+
+
+
+
+
+
+
 
 
 

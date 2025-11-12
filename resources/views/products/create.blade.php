@@ -31,7 +31,7 @@
                         <div class="form-group mb-4">
                             <label for="code" class="form-label">Product Code <span class="text-danger">*</span></label>
                             <input type="text" class="form-control @error('code') is-invalid @enderror" 
-                                   id="code" name="code" value="{{ old('code') }}" required>
+                                   id="code" name="code" value="{{ old('code') }}"  >
                             @error('code')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -55,7 +55,7 @@
                         <div class="form-group mb-4">
                             <label for="stock" class="form-label">Stock <span class="text-danger">*</span></label>
                             <input type="number" class="form-control @error('stock') is-invalid @enderror" 
-                                   id="stock" name="stock" value="{{ old('stock', 0) }}" required>
+                                   id="stock" name="stock" value="{{ old('stock', 0) }}"  >
                             @error('stock')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
