@@ -134,15 +134,19 @@
                     </tbody>
                 </table>
             </div>
-
-            <!-- Pagination -->
-            @if ($products->hasPages())
-            <div class="card-footer bg-transparent">
-                <div class="d-flex justify-content-center">
-                    {{ $products->links() }}
-                </div>
-            </div>
-            @endif
+ 
+                <!-- Pagination -->
+                @if ($products->hasPages())
+                    <div class="card-footer bg-white border-0 rounded-bottom-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="text-muted">
+                                Showing {{ $products->firstItem() ?? 0 }} to {{ $products->lastItem() ?? 0 }} of
+                                {{ $products->total() }} results
+                            </div>
+                            {{ $products->links('pagination::bootstrap-5') }}
+                        </div>
+                    </div>
+                @endif
         </div>
     </div>
 </div>
