@@ -85,7 +85,7 @@ function showAlert(message, type = 'success') {
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>`;
   $('#alertContainer').append(alertHtml);
-  setTimeout(() => { $('#' + alertId).alert('close'); }, 2000);
+  setTimeout(() => { $('#' + alertId).alert('close'); }, 1500);
 }
 
 // ===== Category + Filtering =====
