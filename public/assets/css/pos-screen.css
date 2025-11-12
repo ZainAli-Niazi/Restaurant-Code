@@ -45,14 +45,23 @@ body {
   top: 0;
   z-index: 2;
 }
-
 /* Order Table Wrapper (Scrollable) */
 .order-table-wrap {
-  max-height: 360px;
+  max-height: 400px;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9; /* thumb then track (Firefox) */
+  border-radius: 8px;
 }
+
+/* WebKit scrollbar styles */
+.order-table-wrap::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+ 
 
 /* Totals Section */
 .calc-total {
@@ -483,8 +492,8 @@ body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  width: 36%;
-  padding: 16px;
+  width: 37%;
+  padding: 8px;
   margin: 0;
 }
 
@@ -524,3 +533,6 @@ body {
   margin: 0;
 }
  
+.table>:not(caption)>*>* {
+  padding: 8px 4px;
+}
