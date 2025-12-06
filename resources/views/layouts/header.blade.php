@@ -13,42 +13,44 @@
 
       <!-- Right: User Dropdown -->
       <div class="user-dropdown dropdown">
+         <div class="header-icons d-flex align-items-center gap-3">
+    <!-- Notification Dropdown -->
+    <div class="dropdown notification-dropdown">
+        <button class="icon-btn" type="button" id="notificationDropdown" data-bs-toggle="dropdown"
+                aria-expanded="false">
+            <i class="bi bi-bell-fill"></i>
+            <!-- Optional: Badge for held orders count -->
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                  id="heldOrdersBadge" style="display: none;">
+                0
+            </span>
+        </button>
 
-
-
-          <div class="header-icons d-flex align-items-center gap-3">
-
-              <!-- Notification Dropdown -->
-              <div class="dropdown notification-dropdown">
-                  <button class="icon-btn" type="button" id="notificationDropdown" data-bs-toggle="dropdown"
-                      aria-expanded="false">
-                      <i class="bi bi-bell-fill"></i>
-
-                  </button>
-
-                  <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="notificationDropdown">
-                      <li class="dropdown-header text-primary fw-bold px-3">Recent Orders</li>
-                      <li>
-                          <div class="notification-table">
-                              <table class="table table-sm mb-0">
-                                  <thead class="table-light">
-                                      <tr>
-                                          <th>Order ID</th>
-                                          <th>Time</th>
-                                          <th>Total</th>
-                                          <th>Action</th>
-                                      </tr>
-                                  </thead>
-                                
-                                    
-                                    
-                              </table>
-                          </div>
-                      </li>
-                  </ul>
-              </div>
-
-          </div>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="notificationDropdown" style="min-width: 400px;">
+            <li class="dropdown-header text-primary fw-bold px-3">Held Orders</li>
+            <li>
+                <div class="notification-table">
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="small">Order ID</th>
+                                <th class="small">Time</th>
+                                <th class="small">Total</th>
+                                <th class="small text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- JS will populate this -->
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-3">No held orders</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
 
 
           <button class="btn btn-user dropdown-toggle d-flex align-items-center" type="button" id="userDropdown"
@@ -162,139 +164,6 @@
 
 
 
+  
 
-  <script>
-$(document).ready(function() {
-
-    // Store held orders temporarily
-    let heldOrders = [];
-    let orderCounter = 1;
-
-    // Function to get current time
-    function getCurrentTime() {
-        const now = new Date();
-        return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
-
-    // Get all current order data from POS form
-    function getCurrentOrderData() {
-        let items = [];
-        $("#orderTable tbody tr").each(function() {
-            const item = {
-                name: $(this).find("td:eq(0)").text().trim(),
-                price: parseFloat($(this).find("td:eq(1)").text()) || 0,
-                qty: parseInt($(this).find("td:eq(2) input").val()) || 1,
-                discount: $(this).find("td:eq(3)").text().trim(),
-                total: parseFloat($(this).find("td:eq(4)").text()) || 0
-            };
-            items.push(item);
-        });
-
-        return {
-            id: "H" + orderCounter++,
-            time: getCurrentTime(),
-            items: items,
-            totals: {
-                subTotal: $("#subTotal").text().replace("₨", "").trim(),
-                serviceCharges: $("#serviceCharges").val(),
-                discountAmount: $("#discountAmount").val(),
-                totalAmount: $("#totalAmount").text().replace("₨", "").trim(),
-                paidAmount: $("#paidAmount").val()
-            }
-        };
-    }
-
-    // Update the header notification table dynamically
-    function updateHeldOrdersTable() {
-        let html = "";
-        if (heldOrders.length === 0) {
-            html = `<tr><td colspan="4" class="text-center text-muted">No held orders</td></tr>`;
-        } else {
-            heldOrders.forEach((order) => {
-                html += `
-                    <tr>
-                        <td>${order.id}</td>
-                        <td>${order.time}</td>
-                        <td>₨ ${order.totals.totalAmount}</td>
-                        <td class="text-center">
-                            <button class="btn btn-sm btn-primary view-held" data-id="${order.id}">View</button>
-                            <button class="btn btn-sm btn-danger delete-held" data-id="${order.id}">Delete</button>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-
-        $(".notification-table table tbody").remove();
-        $(".notification-table table").append("<tbody>" + html + "</tbody>");
-    }
-
-    // 🟢 Hold button click
-    $("#btnHold").on("click", function() {
-        const orderData = getCurrentOrderData();
-
-        if (orderData.items.length === 0) {
-            alert("No items in the order!");
-            return;
-        }
-
-        // Add new hold order on top
-        heldOrders.unshift(orderData);
-
-        // Update the dropdown display
-        updateHeldOrdersTable();
-
-      
-    });
-
-    // 🟡 View button click
-    $(document).on("click", ".view-held", function() {
-        const id = $(this).data("id");
-        const order = heldOrders.find(o => o.id === id);
-
-        if (!order) {
-            alert("Order not found!");
-            return;
-        }
-
-        // Restore items in POS table
-        const tbody = $("#orderTable tbody");
-        tbody.empty();
-
-        order.items.forEach((item) => {
-            const row = `
-                <tr>
-                    <td>${item.name}</td>
-                    <td class="text-end">${item.price.toFixed(2)}</td>
-                    <td class="text-center"><input type="number" class="form-control form-control-sm" value="${item.qty}" min="1" style="width:60px;"></td>
-                    <td class="text-center">${item.discount}</td>
-                    <td class="text-end">${item.total.toFixed(2)}</td>
-                    <td class="text-center"><button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button></td>
-                </tr>
-            `;
-            tbody.append(row);
-        });
-
-        // Restore totals
-        $("#subTotal").text("₨ " + order.totals.subTotal);
-        $("#serviceCharges").val(order.totals.serviceCharges);
-        $("#discountAmount").val(order.totals.discountAmount);
-        $("#totalAmount").text("₨ " + order.totals.totalAmount);
-        $("#paidAmount").val(order.totals.paidAmount);
-        $("#totalItems").text(order.items.length);
-
-        $(".dropdown-menu").removeClass("show");
-        
-    });
-
-    // 🔴 Delete button click
-    $(document).on("click", ".delete-held", function() {
-        const id = $(this).data("id");
-        heldOrders = heldOrders.filter(o => o.id !== id);
-        updateHeldOrdersTable();
-        alert("Held order deleted successfully!");
-    });
-
-});
-</script>
-
+ 
