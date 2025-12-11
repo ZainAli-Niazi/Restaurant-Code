@@ -78,7 +78,7 @@
                     <div class="col-md-6">
                         <label for="amount" class="form-label">Amount <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <span class="input-group-text">₨</span>
+                            <span class="input-group-text">$</span>
                             <input type="number" 
                                    step="0.01" 
                                    class="form-control @error('amount') is-invalid @enderror" 

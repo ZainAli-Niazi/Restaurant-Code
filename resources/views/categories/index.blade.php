@@ -4,7 +4,7 @@
 @section('header', $restaurantSettings['restaurant_name'] ?? 'Restaurant')
 
 @section('content')
-<div class="container-fluid px-0">
+<div class="container-fluid py-2">
 
     <!-- Header Section -->
     <div class="row mb-4 align-items-center">

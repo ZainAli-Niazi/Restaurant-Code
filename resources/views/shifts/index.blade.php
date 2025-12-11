@@ -208,8 +208,8 @@
                         <td>{{ $shift->id }}</td>
                         <td>{{ $shift->name }}</td>
                         <td>{{ $shift->user->name ?? 'N/A' }}</td>
-                        <td>₨ {{ number_format($shift->starting_cash, 2) }}</td>
-                        <td>{{ $shift->ending_cash ? '₨ ' . number_format($shift->ending_cash, 2) : '-' }}</td>
+                        <td>$ {{ number_format($shift->starting_cash, 2) }}</td>
+                        <td>{{ $shift->ending_cash ? '$ ' . number_format($shift->ending_cash, 2) : '-' }}</td>
                         <td>{{ $shift->start_time }}</td>
                         <td>{{ $shift->end_time ?? '-' }}</td>
                         <td>

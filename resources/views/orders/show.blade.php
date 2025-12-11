@@ -48,7 +48,7 @@
                             <p>
                                 <strong>Total Amount:</strong> 
                                 <span class="fw-bold fs-5 text-success">
-                                    ₨{{ number_format($order->total_amount, 2) }}
+                                    ${{ number_format($order->total_amount, 2) }}
                                 </span>
                             </p>
                         </div>
@@ -67,8 +67,8 @@
                                 <tr>
                                     <th>Product</th>
                                     <th width="100">Qty</th>
-                                    <th class="text-end">Price (₨)</th>
-                                    <th class="text-end">Subtotal (₨)</th>
+                                    <th class="text-end">Price ($)</th>
+                                    <th class="text-end">Subtotal ($)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -78,15 +78,15 @@
                                         <td class="text-center">
                                             <span class="badge bg-dark">{{ $item->quantity }}</span>
                                         </td>
-                                        <td class="text-end">₨{{ number_format($item->price, 2) }}</td>
-                                        <td class="text-end text-success fw-bold">₨{{ number_format($item->quantity * $item->price, 2) }}</td>
+                                        <td class="text-end">${{ number_format($item->price, 2) }}</td>
+                                        <td class="text-end text-success fw-bold">${{ number_format($item->quantity * $item->price, 2) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                             <tfoot>
                                 <tr class="table-light">
                                     <th colspan="3" class="text-end">Total:</th>
-                                    <th class="text-end fs-5 fw-bold text-success">₨{{ number_format($order->total_amount, 2) }}</th>
+                                    <th class="text-end fs-5 fw-bold text-success">${{ number_format($order->total_amount, 2) }}</th>
                                 </tr>
                             </tfoot>
                         </table>

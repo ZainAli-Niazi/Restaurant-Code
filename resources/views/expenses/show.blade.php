@@ -30,7 +30,7 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <strong class="d-block text-muted small">Amount</strong>
-                        <span class="fs-5 text-danger">₨{{ number_format($expense->amount, 2) }}</span>
+                        <span class="fs-5 text-danger">${{ number_format($expense->amount, 2) }}</span>
                     </div>
                     <div class="mb-3">
                         <strong class="d-block text-muted small">Added By</strong>

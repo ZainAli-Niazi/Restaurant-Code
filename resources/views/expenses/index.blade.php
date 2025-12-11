@@ -66,7 +66,7 @@
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h6 class="mb-0 text-muted">Total Expenses</h6>
-                                        <h4 class="mb-0 text-danger">₨{{ number_format($expenses->sum('amount'), 2) }}</h4>
+                                        <h4 class="mb-0 text-danger">${{ number_format($expenses->sum('amount'), 2) }}</h4>
                                     </div>
                                      
                                 </div>
@@ -132,7 +132,7 @@
                                 {{ $expense->description }}
                             </td>
                             <td class="text-end text-danger fw-bold">
-                                ₨{{ number_format($expense->amount, 2) }}
+                                ${{ number_format($expense->amount, 2) }}
                             </td>
                             <td class="text-nowrap">
                                 <div class="d-flex align-items-center">

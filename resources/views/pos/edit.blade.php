@@ -137,7 +137,7 @@
                 </div>
                 <div class="col-6 col-sm-2">
                     <div class="calc-label">Sub Total</div>
-                    <div class="calc-total" id="subTotal">₨ 0</div>
+                    <div class="calc-total" id="subTotal">$ 0</div>
                 </div>
                 <div class="col-6 col-sm-2">
                     <label class="form-label calc-label mb-1">Service Charges</label>
@@ -153,14 +153,14 @@
                 </div>
                 <div class="col-6 col-sm-2">
                     <div class="calc-label">Total Amount</div>
-                    <div class="calc-total" id="totalAmount">₨ 0</div>
+                    <div class="calc-total" id="totalAmount">$ 0</div>
                 </div>
                 <div class="col-6 col-sm-2">
                     <label class="form-label calc-label mb-1 calc-paid">
                         <span>Paid</span>
                         <span class="small text-secondary mt-1 text-end">
-                            Balance: <span id="balanceAmount">₨ 0</span> |
-                            Return: <span id="returnAmount">₨ 0</span>
+                            Balance: <span id="balanceAmount">$ 0</span> |
+                            Return: <span id="returnAmount">$ 0</span>
                         </span>
                     </label>
                     <input type="number" class="form-control form-control-sm" id="paidAmount" value="0"

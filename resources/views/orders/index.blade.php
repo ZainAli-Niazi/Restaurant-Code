@@ -143,7 +143,7 @@
                                         </span>
                                     </td>
                                     <td class="fw-bold text-success fs-6">
-                                        ₨ {{ number_format($order->total_amount, 2) }}
+                                        $ {{ number_format($order->total_amount, 2) }}
                                     </td>
                                     <td>
                                         <span class="badge status-badge status-{{ $order->status }}">

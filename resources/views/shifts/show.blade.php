@@ -36,7 +36,7 @@
                     <p class="mb-2 fw-bold">
                         <i class="fas fa-wallet text-warning me-2"></i> Starting Cash:
                     </p>
-                    <p class="text-muted">₨ {{ number_format($shift->starting_cash, 2) }}</p>
+                    <p class="text-muted">$ {{ number_format($shift->starting_cash, 2) }}</p>
                 </div>
 
                 {{-- Ending Cash --}}
@@ -46,7 +46,7 @@
                     </p>
                     <p class="text-muted">
                         @if($shift->ending_cash !== null)
-                            ₨ {{ number_format($shift->ending_cash, 2) }}
+                            $ {{ number_format($shift->ending_cash, 2) }}
                         @else
                             <span class="badge bg-secondary">Not Closed</span>
                         @endif

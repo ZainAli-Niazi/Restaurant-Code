@@ -4,7 +4,7 @@
 @section('header', $restaurantSettings['restaurant_name'] ?? 'Restaurant')
 
 @section('content')
-<div class="container-fluid py-2">
+<div class="container-fluid py-3">
 
     <!-- Header Section -->
     <div class="row mb-4 align-items-center">
@@ -73,7 +73,7 @@
                             <td><code>{{ $product->code }}</code></td>
 
                             <!-- Product Price -->
-                            <td>₨{{ number_format($product->price, 2) }}</td>
+                            <td>${{ number_format($product->price, 2) }}</td>
 
                             <!-- Product Stock -->
                             <td>

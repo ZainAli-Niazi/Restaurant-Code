@@ -13,7 +13,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-title mb-1">Today's Sales</h6>
-                            <h3 class="mb-0">₨ {{ number_format($todaySales, 2) }}</h3>
+                            <h3 class="mb-0">${{ number_format($todaySales, 2) }}</h3>
                            
                         </div>
                         
@@ -43,7 +43,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-title mb-1">Today's Expenses</h6>
-                            <h3 class="mb-0">₨ {{ number_format($todayExpenses, 2) }}</h3>
+                            <h3 class="mb-0">$ {{ number_format($todayExpenses, 2) }}</h3>
                        
                         </div>
                       
@@ -58,7 +58,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-title mb-1">Shift Balance</h6>
-                            <h3 class="mb-0">₨ {{ number_format($shiftBalance, 2) }}</h3>
+                            <h3 class="mb-0">$ {{ number_format($shiftBalance, 2) }}</h3>
                          
                         </div>
                        
@@ -109,7 +109,7 @@
                                     <tr>
                                         <td>#{{ $order->order_number ?? $order->id }}</td>
                                         <td>{{ $order->table_number ?? 'N/A' }}</td>
-                                        <td>₨ {{ number_format($order->total_amount, 2) }}</td>
+                                        <td>$ {{ number_format($order->total_amount, 2) }}</td>
                                         <td>
                                             <span class="badge 
                                                 {{ $order->status == 'completed' ? 'bg-success' : 
@@ -150,7 +150,7 @@
                                     <div>
                                         <strong>{{ $item->product->name ?? 'N/A' }}</strong>
                                         <br>
-                                        <small class="text-muted">₨ {{ number_format($item->total_amount, 2) }}</small>
+                                        <small class="text-muted">$ {{ number_format($item->total_amount, 2) }}</small>
                                     </div>
                                     <span class="badge bg-primary rounded-pill">{{ $item->total_quantity }} sold</span>
                                 </li>
@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     bodyFont: { size: 12 },
                     callbacks: {
                         label: function(context) {
-                            return 'Sales: ₨ ' + context.parsed.y.toLocaleString();
+                            return 'Sales: $ ' + context.parsed.y.toLocaleString();
                         }
                     }
                 }
@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     beginAtZero: true,
                     ticks: {
                         callback: function(value) {
-                            return '₨ ' + value.toLocaleString();
+                            return '$ ' + value.toLocaleString();
                         }
                     },
                     grid: {
