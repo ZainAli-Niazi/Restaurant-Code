@@ -41,7 +41,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <strong>Total Expenses:</strong> 
-                        <span class="fs-4">Rs{{ number_format($totalExpenses, 2) }}</span>
+                        <span class="fs-4">${{ number_format($totalExpenses, 2) }}</span>
                     </div>
                     <div>
                         <strong>Period:</strong> 

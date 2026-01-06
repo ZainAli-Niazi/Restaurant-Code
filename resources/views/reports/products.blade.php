@@ -68,7 +68,7 @@
                         <tr>
                             <td>{{ $data->name }}</td>
                             <td class="text-end">{{ $data->sold_quantity }}</td>
-                            <td class="text-end">Rs {{ number_format($data->total_revenue, 2) }}</td>
+                            <td class="text-end">$ {{ number_format($data->total_revenue, 2) }}</td>
                         </tr>
                         @empty
                         <tr>
@@ -85,7 +85,7 @@
                         <tr>
                             <td>Total</td>
                             <td class="text-end">{{ $summary['total_quantity'] }}</td>
-                            <td class="text-end">Rs {{ number_format($summary['total_revenue'], 2) }}</td>
+                            <td class="text-end">$ {{ number_format($summary['total_revenue'], 2) }}</td>
                         </tr>
                     </tfoot>
                     @endif

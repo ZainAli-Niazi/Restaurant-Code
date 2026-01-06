@@ -12,14 +12,14 @@
                     <i class="fas fa-chart-line me-2"></i>Sales Performance
                     <small class="text-muted fs-6">(Completed Orders Only)</small>
                 </h5>
-                <div>
+                {{-- <div>
                     <button class="btn btn-sm btn-outline-secondary" id="printReport">
                         <i class="fas fa-print me-1"></i> Print
                     </button>
                     <button class="btn btn-sm btn-outline-primary" id="exportExcel">
                         <i class="fas fa-file-excel me-1"></i> Export
                     </button>
-                </div>
+                </div> --}}
             </div>
         </div>
 
@@ -61,7 +61,7 @@
                     <div class="card border-primary">
                         <div class="card-body">
                             <h6 class="card-subtitle mb-2 text-muted">Total Revenue</h6>
-                            <h3 class="card-title text-primary">Rs {{ number_format($totalRevenue, 2) }}</h3>
+                            <h3 class="card-title text-primary">$ {{ number_format($totalRevenue, 2) }}</h3>
                             @if($revenueChangePercentage != 0)
                             <div class="text-{{ $revenueChangePercentage >= 0 ? 'success' : 'danger' }} small">
                                 <i class="fas fa-arrow-{{ $revenueChangePercentage >= 0 ? 'up' : 'down' }}"></i> 
@@ -89,7 +89,7 @@
                     <div class="card border-info">
                         <div class="card-body">
                             <h6 class="card-subtitle mb-2 text-muted">Avg. Order Value</h6>
-                            <h3 class="card-title text-info">Rs {{ number_format($totalRevenue / max($totalOrders, 1), 2) }}</h3>
+                            <h3 class="card-title text-info"> ${{ number_format($totalRevenue / max($totalOrders, 1), 2) }}</h3>
                             @if($aovChangePercentage != 0)
                             <div class="text-{{ $aovChangePercentage >= 0 ? 'success' : 'danger' }} small">
                                 <i class="fas fa-arrow-{{ $aovChangePercentage >= 0 ? 'up' : 'down' }}"></i> 
@@ -108,7 +108,7 @@
                                     {{ $bestDay->date->format('D, M j') }}
                                 </h3>
                                 <div class="text-muted small">
-                                    Rs {{ number_format($bestDay->revenue, 2) }} from {{ $bestDay->orders }} orders
+                                    $ {{ number_format($bestDay->revenue, 2) }} from {{ $bestDay->orders }} orders
                                 </div>
                             @else
                                 <h3 class="card-title text-warning">N/A</h3>
@@ -141,8 +141,8 @@
                                         {{ $data->date->format('D, M j, Y') }}
                                     </td>
                                     <td class="text-end">{{ $data->orders }}</td>
-                                    <td class="text-end">Rs {{ number_format($data->revenue, 2) }}</td>
-                                    <td class="text-end">Rs {{ number_format($data->revenue / max($data->orders, 1), 2) }}</td>
+                                    <td class="text-end">$ {{ number_format($data->revenue, 2) }}</td>
+                                    <td class="text-end">$ {{ number_format($data->revenue / max($data->orders, 1), 2) }}</td>
                                     <td class="text-end">{{ number_format(($data->revenue / max($totalRevenue, 1)) * 100, 1) }}%</td>
                                 </tr>
                                 @empty
@@ -159,8 +159,8 @@
                                 <tr>
                                     <th>Total</th>
                                     <th class="text-end">{{ $totalOrders }}</th>
-                                    <th class="text-end">Rs {{ number_format($totalRevenue, 2) }}</th>
-                                    <th class="text-end">Rs {{ number_format($totalRevenue / max($totalOrders, 1), 2) }}</th>
+                                    <th class="text-end">$ {{ number_format($totalRevenue, 2) }}</th>
+                                    <th class="text-end">$ {{ number_format($totalRevenue / max($totalOrders, 1), 2) }}</th>
                                     <th class="text-end">100%</th>
                                 </tr>
                             </tfoot>
@@ -190,7 +190,7 @@
                 labels: {!! json_encode($salesData->map(fn($item) => $item->date->format('M j'))) !!},
                 datasets: [
                     {
-                        label: 'Revenue (Rs)',
+                        label: 'Revenue ($)',
                         data: {!! json_encode($salesData->pluck('revenue')) !!},
                         backgroundColor: 'rgba(54, 162, 235, 0.7)',
                         borderColor: 'rgba(54, 162, 235, 1)',
@@ -240,7 +240,7 @@
                                 let label = context.dataset.label || '';
                                 if (label) label += ': ';
                                 if (context.datasetIndex === 0) {
-                                    label += 'Rs ' + context.parsed.y.toLocaleString();
+                                    label += '$ ' + context.parsed.y.toLocaleString();
                                 } else {
                                     label += context.parsed.y;
                                 }
@@ -256,7 +256,7 @@
                         position: 'left',
                         title: {
                             display: true,
-                            text: 'Revenue (Rs)',
+                            text: 'Revenue ($)',
                             font: { size: 14, weight: 'bold' }
                         },
                         grid: {

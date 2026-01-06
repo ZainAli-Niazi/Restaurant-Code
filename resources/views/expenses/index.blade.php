@@ -92,7 +92,7 @@
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h6 class="mb-0 text-muted">Average Daily</h6>
-                                        <h4 class="mb-0">Rs{{ number_format($averageDaily, 2) }}</h4>
+                                        <h4 class="mb-0">${{ number_format($averageDaily, 2) }}</h4>
                                     </div>
                                      
                                 </div>

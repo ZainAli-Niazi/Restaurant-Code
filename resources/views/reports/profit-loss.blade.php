@@ -53,7 +53,7 @@
                             <i class="fas fa-wallet"></i>
                         </div>
                         <div class="card-body text-center">
-                            <h3 class="text-success fw-bold">Rs {{ number_format($revenue, 2) }}</h3>
+                            <h3 class="text-success fw-bold">$ {{ number_format($revenue, 2) }}</h3>
                             <small class="text-muted">From Completed Orders</small>
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                             <i class="fas fa-receipt"></i>
                         </div>
                         <div class="card-body text-center">
-                            <h3 class="text-danger fw-bold">Rs {{ number_format($expenses, 2) }}</h3>
+                            <h3 class="text-danger fw-bold">$ {{ number_format($expenses, 2) }}</h3>
                             <small class="text-muted">Operational Costs</small>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
                         </div>
                         <div class="card-body text-center">
                             <h3 class="text-{{ $profit >= 0 ? 'success' : 'danger' }} fw-bold">
-                                Rs {{ number_format(abs($profit), 2) }}
+                                $ {{ number_format(abs($profit), 2) }}
                             </h3>
                             <div class="small text-muted">
                                 {{ $profitMargin = $revenue ? round(($profit/$revenue)*100, 2) : 0 }}% Margin
